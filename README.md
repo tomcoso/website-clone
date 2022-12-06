@@ -30,3 +30,13 @@ Order of business:
 13. Home page filters (hot, best, new, etc)
 14. User activity tabs (posts, comments)
 15. (opt) Home side panels (communities leaderboard)
+
+#### Auth
+
+- Setup unique username filter (firebase-admin setup) OK
+- add error handling UI OK
+- add password patterns OK
+- add styled-components red on invalid inputs (:invalid or using state/classes) OK
+- add login validation
+- add validation messages
+- code Verify email interface, once verified make it redirect to home
