@@ -12,7 +12,7 @@ const Input = styled.input`
   font-size: 1rem;
   border-radius: 2px;
   border: 1px solid ${(props) => (props.invalid ? "red" : "black")};
-  padding: 0.25rem 0.5rem;
+  padding: 0.2rem 0.5rem;
 `;
 
 const ControlledInput = React.forwardRef(
@@ -27,7 +27,7 @@ const ControlledInput = React.forwardRef(
       pattern = false,
       invalid,
     },
-    ref = false
+    ref = undefined
   ) => {
     return (
       <Unit>

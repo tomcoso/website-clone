@@ -1,21 +1,25 @@
 import { onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation, Outlet } from "react-router";
 import { login, logout } from "./auth/userSlice";
 import Header from "./components/Header";
+import "./style.scss";
 import { auth } from "./firebase.app";
 
 function App() {
-  // const update = useState(0)[1];
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   onAuthStateChanged(auth, (user) => {
-    if (user && user.emailVerified) {
-      dispatch(login({ username: user.displayName }));
+    if (user) {
+      dispatch(
+        login({
+          username: user.displayName,
+        })
+      );
     } else {
       dispatch(logout());
     }
@@ -25,9 +29,13 @@ function App() {
     if (pathname === "/" && !user.isLoggedIn) {
       navigate("/login");
     }
+    if (pathname === "/login" && !!user.isLoggedIn) {
+      navigate("/");
+    }
     if (
-      (pathname === "/login" || pathname === "/register") &&
-      !!user.isLoggedIn
+      pathname === "/register" &&
+      auth.currentUser &&
+      !!auth.currentUser.emailVerified
     ) {
       navigate("/");
     }

@@ -37,6 +37,6 @@ Order of business:
 - add error handling UI OK
 - add password patterns OK
 - add styled-components red on invalid inputs (:invalid or using state/classes) OK
-- add login validation
-- add validation messages
-- code Verify email interface, once verified make it redirect to home
+- add login validation OK
+- add validation messages OK
+- code Verify email interface, once verified make it redirect to home OK

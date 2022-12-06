@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 import { createUser } from "../firebase.app";
 import ControlledInput from "../components/ControlledInput";
 import Button from "../components/Button";
-import RegisterErrors from "./RegisterErors";
-import AuthForm from "../components/AuthForm";
+import RegisterErrors from "./components/RegisterErors";
+import AuthForm from "./components/AuthForm";
 
 import { checkValidity } from "./authUtility";
+import VerifyEmail from "./components/VerifyEmail";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -23,19 +24,11 @@ const Register = () => {
   const passRef = useRef();
   const passRepeatRef = useRef();
 
-  const clearInputs = () => {
-    setUsername("");
-    setEmail("");
-    setPassword("");
-    setRepeatPassword("");
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (error) return;
     createUser(email, password, username)
       .then(() => {
-        clearInputs();
         setVerification(true);
       })
       .catch((error) => {
@@ -72,7 +65,7 @@ const Register = () => {
             control={setUsername}
             required={true}
             ref={usernameRef}
-            invalid={error && error.match(/username/) ? true : false}
+            invalid={error !== "" && error.match(/username/) ? true : false}
           >
             Username
           </ControlledInput>
@@ -83,7 +76,7 @@ const Register = () => {
             control={setEmail}
             required={true}
             ref={emailRef}
-            invalid={error && error.match(/email/) ? true : false}
+            invalid={error !== "" && error.match(/email/) ? true : false}
           >
             E-mail address
           </ControlledInput>
@@ -97,7 +90,7 @@ const Register = () => {
             pattern={
               "^(?=[^A-Z]*[A-Z])(?=[^a-z]*[a-z])(?=[^0-9]*[0-9]).{8,16}$"
             }
-            invalid={error && error.match(/pass\//) ? true : false}
+            invalid={error !== "" && error.match(/pass\//) ? true : false}
           >
             Password
           </ControlledInput>
@@ -109,7 +102,7 @@ const Register = () => {
             required={true}
             pattern={password}
             ref={passRepeatRef}
-            invalid={error && error.match(/pass-repeat/) ? true : false}
+            invalid={error !== "" && error.match(/pass-repeat/) ? true : false}
           >
             Repeat password
           </ControlledInput>
@@ -119,9 +112,7 @@ const Register = () => {
           </Button>
         </AuthForm>
       ) : (
-        <section>
-          <h2>Verify email to activate your account.</h2>
-        </section>
+        <VerifyEmail address={email} />
       )}
       <p>
         Already have an account? <Link to="/login">Log in</Link>

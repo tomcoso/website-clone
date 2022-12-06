@@ -1,11 +1,10 @@
 import { initializeApp } from "firebase/app";
 import {
+  addDoc,
   collection,
-  doc,
   getCountFromServer,
   getFirestore,
   query,
-  setDoc,
   where,
 } from "firebase/firestore";
 import {
@@ -30,10 +29,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const login = ({ email, password }) => {
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => console.log("logged in succesfully"))
-    .catch((error) => console.error("Couldn't sign in", error));
+const login = async ({ email, password }) => {
+  return await signInWithEmailAndPassword(auth, email, password)
+    .then(() => Promise.resolve())
+    .catch((error) => Promise.reject(error.code));
 };
 
 const logout = () => {
@@ -58,10 +57,8 @@ const createUser = async (email, password, username) => {
     .then((userCredential) => {
       updateProfile(userCredential.user, { displayName: username });
       sendEmailVerification(userCredential.user);
-      setDoc(doc(db, "users", "data"), {
-        username,
-        uid: userCredential.user.uid,
-      });
+      const uid = userCredential.user.uid;
+      addDoc(collection(db, "users"), { uid, username });
     })
     .catch((error) => {
       return Promise.reject(error.code);
