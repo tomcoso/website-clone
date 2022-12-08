@@ -15,9 +15,9 @@ Study of Reddit's structure
 
 Order of business:
 
-1. Setup Firebase auth and storage
-2. Login & Register page
-3. Setup Communities database
+1. Setup Firebase auth and storage OK
+2. Login & Register page OK
+3. Setup Communities database OK
 4. Community interface
 5. Community page
 6. Post creation page

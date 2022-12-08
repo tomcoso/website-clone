@@ -3,6 +3,7 @@ import {
   addDoc,
   collection,
   getCountFromServer,
+  getDocs,
   getFirestore,
   query,
   where,
@@ -66,4 +67,32 @@ const createUser = async (email, password, username) => {
   return res;
 };
 
-export { auth, login, logout, createUser };
+const _communitiesRef = collection(db, "communities");
+
+const getCommunity = async (name) => {
+  const commSnapshot = await getDocs(
+    query(_communitiesRef, where("name", "==", name))
+  );
+  let data;
+  commSnapshot.forEach((doc) => (data = doc.data()));
+  return data
+    ? Promise.resolve(data)
+    : Promise.reject(Error("community-does-not-exist"));
+};
+
+const createCommunity = async (name) => {
+  const communitySnapshot = await getCountFromServer(
+    query(_communitiesRef, where("name", "==", name))
+  );
+  if (communitySnapshot.data().count > 0)
+    return Promise.reject(Error("community-already-exists"));
+  const newCommunity = {
+    name,
+    posts: [],
+    moderators: [auth.currentUser.uid],
+    members: [auth.currentUser.uid],
+  };
+  await addDoc(_communitiesRef, newCommunity);
+};
+
+export { auth, login, logout, createUser, getCommunity, createCommunity };
