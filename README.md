@@ -11,7 +11,10 @@ Coralit is a social media platform based on [Reddit](https://www.reddit.com/). I
 ## Development
 
 Study of Reddit's structure
-<img src='./src/assets/documentation/reddit-study.png'>
+<img src='./src/assets/documentation/reddit-study.png'/>
+
+Database design for communities
+<img src='./src/assets/documentation/community-db.png'/>
 
 Order of business:
 
