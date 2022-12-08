@@ -1,11 +1,16 @@
 import { initializeApp } from "firebase/app";
 import {
   addDoc,
+  arrayUnion,
   collection,
+  deleteDoc,
+  doc,
   getCountFromServer,
+  getDoc,
   getDocs,
   getFirestore,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import {
@@ -30,6 +35,23 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// UTILITY --------------------------------------------------------------------
+
+const _communitiesRef = collection(db, "communities");
+const _postsRef = collection(db, "posts");
+const _usersRef = collection(db, "users");
+
+const _getUserDoc = async (uid) => {
+  const userQSnapshot = await getDocs(
+    query(_usersRef, where("uid", "==", uid))
+  );
+  let userDoc;
+  userQSnapshot.forEach((doc) => (userDoc = doc));
+  return userDoc;
+};
+
+// USERS ----------------------------------------------------------------------
+
 const login = async ({ email, password }) => {
   return await signInWithEmailAndPassword(auth, email, password)
     .then(() => Promise.resolve())
@@ -48,7 +70,7 @@ const logout = () => {
 
 const createUser = async (email, password, username) => {
   const usernameSnapshot = await getCountFromServer(
-    query(collection(db, "users"), where("username", "==", username))
+    query(_usersRef, where("username", "==", username))
   );
   if (usernameSnapshot.data().count > 0) {
     const error = Error("auth/username-already-in-use");
@@ -59,7 +81,7 @@ const createUser = async (email, password, username) => {
       updateProfile(userCredential.user, { displayName: username });
       sendEmailVerification(userCredential.user);
       const uid = userCredential.user.uid;
-      addDoc(collection(db, "users"), { uid, username });
+      addDoc(_usersRef, { uid, username });
     })
     .catch((error) => {
       return Promise.reject(error.code);
@@ -67,7 +89,7 @@ const createUser = async (email, password, username) => {
   return res;
 };
 
-const _communitiesRef = collection(db, "communities");
+// COMMUNITIES ----------------------------------------------------------------
 
 const getCommunity = async (name) => {
   const commSnapshot = await getDocs(
@@ -95,4 +117,38 @@ const createCommunity = async (name) => {
   await addDoc(_communitiesRef, newCommunity);
 };
 
-export { auth, login, logout, createUser, getCommunity, createCommunity };
+// POSTS ----------------------------------------------------------------------
+
+const createPost = async (title, content, community) => {
+  const newPost = {
+    title,
+    content,
+    community,
+    upvotes: [auth.currentUser.uid],
+    user: auth.currentUser.uid,
+    comments: [],
+  };
+  const postRef = await addDoc(_postsRef, newPost);
+  const userDoc = _getUserDoc(auth.currentUser.uid);
+  updateDoc(userDoc, { posts: arrayUnion(postRef.id) });
+};
+
+const deletePost = async (postId) => {
+  const postDocRef = doc(db, "posts", postId);
+  const postDoc = await getDoc(postDocRef);
+  const userDoc = await _getUserDoc(auth.currentUser.uid);
+  if (userDoc.data().posts.find((x) => x.user === postDoc.data().user))
+    return Promise.reject(Error("not authorised"));
+  return await deleteDoc(postDocRef);
+};
+
+export {
+  auth,
+  login,
+  logout,
+  createUser,
+  getCommunity,
+  createCommunity,
+  createPost,
+  deletePost,
+};
