@@ -19,6 +19,7 @@ function App() {
         login({
           username: user.displayName,
           email: user.email,
+          uid: user.uid,
         })
       );
     } else {
