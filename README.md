@@ -43,3 +43,11 @@ Order of business:
 - add login validation OK
 - add validation messages OK
 - code Verify email interface, once verified make it redirect to home OK
+
+- add google provider to register and login <-------
+
+#### community
+
+- setup create community page OK
+- setup community page
+- setup security rules to handle email verified users authority OK / also with posts and comments!

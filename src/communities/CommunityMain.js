@@ -14,7 +14,6 @@ const CommunityMain = () => {
     (async () => {
       try {
         const data = await getCommunity(commName);
-        console.log(data);
         setCommData(data);
       } catch (error) {
         console.log("404", error);

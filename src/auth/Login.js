@@ -4,7 +4,7 @@ import { login } from "../firebase.app";
 import ControlledInput from "../components/ControlledInput";
 import Button from "../components/Button";
 import AuthForm from "./components/AuthForm";
-import ErrorMsg from "./components/ErrorMsg";
+import { ErrorMsg } from "./authUtility";
 
 const Login = () => {
   const [email, setEmail] = useState("");

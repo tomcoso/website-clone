@@ -113,9 +113,21 @@ const createCommunity = async (name) => {
     posts: [],
     moderators: [auth.currentUser.uid],
     members: [auth.currentUser.uid],
+    timestamp: new Date(),
   };
-  await addDoc(_communitiesRef, newCommunity);
+  return await addDoc(_communitiesRef, newCommunity).catch((error) =>
+    Promise.reject(error)
+  );
 };
+
+// TODO : make user moderator
+// TODO : unmake user moderator
+// TODO : ban user (mod)
+// TODO : unban user (mod)
+// TODO : join community
+// TODO : unjoin/abandon/desubscribe/leave community
+// TODO : remove post (mod)
+// TODO : remove comment (mod)
 
 // POSTS ----------------------------------------------------------------------
 
