@@ -8,6 +8,8 @@ const RegisterErrors = ({ errorCode }) => {
       case "auth/username-already-in-use":
         return "Username is already in use";
 
+      case "username/mismatch":
+        return "Username can't contain spaces or special characters";
       case "username/novalue":
         return "Please choose a username";
 

@@ -87,9 +87,6 @@ const Register = () => {
             control={setPassword}
             required={true}
             ref={passRef}
-            pattern={
-              "^(?=[^A-Z]*[A-Z])(?=[^a-z]*[a-z])(?=[^0-9]*[0-9]).{8,16}$"
-            }
             invalid={error !== "" && error.match(/pass\//) ? true : false}
           >
             Password

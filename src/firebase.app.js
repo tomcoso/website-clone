@@ -69,6 +69,14 @@ const logout = () => {
 };
 
 const createUser = async (email, password, username) => {
+  if (
+    !password.match(/^(?=[^A-Z]*[A-Z])(?=[^a-z]*[a-z])(?=[^0-9]*[0-9]).{8,16}$/)
+  )
+    return Promise.reject(Error("pass/mismatch").message);
+
+  if (!username.match(/^\w{6,}$/))
+    return Promise.reject(Error("username/mismatch").message);
+
   const usernameSnapshot = await getCountFromServer(
     query(_usersRef, where("username", "==", username))
   );
@@ -76,6 +84,7 @@ const createUser = async (email, password, username) => {
     const error = Error("auth/username-already-in-use");
     return Promise.reject(error.message);
   }
+
   const res = await createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       updateProfile(userCredential.user, { displayName: username });
@@ -86,6 +95,7 @@ const createUser = async (email, password, username) => {
     .catch((error) => {
       return Promise.reject(error.code);
     });
+  console.log(res);
   return res;
 };
 
