@@ -44,7 +44,7 @@ Order of business:
 - add validation messages OK
 - code Verify email interface, once verified make it redirect to home OK
 
-- add google provider to register and login <-------
+- add username pattern for no spaces or special charaacters! <-------
 
 #### community
 
