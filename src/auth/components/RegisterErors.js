@@ -1,4 +1,4 @@
-import ErrorMsg from "./ErrorMsg";
+import { ErrorMsg } from "../authUtility";
 
 const RegisterErrors = ({ errorCode }) => {
   const displayMessage = (error) => {

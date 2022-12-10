@@ -1,3 +1,5 @@
+import styled from "styled-components";
+
 const checkValidity = (elem) => {
   const val = elem.validity;
   if (val.valueMissing) {
@@ -11,4 +13,13 @@ const checkValidity = (elem) => {
   }
 };
 
-export { checkValidity };
+const ErrorMsg = styled.p`
+  font-size: 0.8rem;
+  font-family: monospace;
+  color: red;
+  padding: 0.5rem;
+  background-color: rgba(255, 0, 0, 0.1);
+  width: 40ch;
+`;
+
+export { checkValidity, ErrorMsg };

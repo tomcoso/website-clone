@@ -27,7 +27,7 @@ const ControlledInput = React.forwardRef(
       pattern = false,
       invalid,
     },
-    ref = undefined
+    ref
   ) => {
     return (
       <Unit>

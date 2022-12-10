@@ -8,7 +8,7 @@ import { BrowserRouter } from "react-router-dom";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 import CommunityMain from "./communities/CommunityMain";
-import CommunityNew from "./communities/CommunityNew";
+import Home from "./home/Home";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -17,12 +17,11 @@ root.render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />}>
-            <Route index element={<p>INDEX</p>} />
+            <Route index element={<Home />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="c">
               <Route path=":community" element={<CommunityMain />} />
-              <Route path="new" element={<CommunityNew />} />
             </Route>
           </Route>
         </Routes>
