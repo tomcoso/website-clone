@@ -18,6 +18,7 @@ function App() {
       dispatch(
         login({
           username: user.displayName,
+          email: user.email,
         })
       );
     } else {

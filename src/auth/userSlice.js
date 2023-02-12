@@ -7,7 +7,7 @@ const userSlice = createSlice({
     login: (state, action) => {
       state.isLoggedIn = true;
       state.username = action.payload.username;
-      state.email = action.email;
+      state.email = action.payload.email;
     },
     logout: (state) => {
       state.isLoggedIn = false;

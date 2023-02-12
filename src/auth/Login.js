@@ -32,7 +32,7 @@ const Login = () => {
   return (
     <main>
       <h1>Login</h1>
-      <AuthForm>
+      <AuthForm onKeyDown={(e) => e.key === "Enter" && handleSubmit()}>
         <ControlledInput
           type={"email"}
           id="login-email"
