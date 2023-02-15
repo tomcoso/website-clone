@@ -6,6 +6,8 @@ import styled from "styled-components";
 import { getCommunity } from "../firebase.app";
 import Button from "../components/Button";
 import "./styling/communityMain.scss";
+import Panel from "./components/Panel";
+import CreatePost from "./components/CreatePost";
 
 const HeroSection = styled.section`
   width: 100%;
@@ -72,7 +74,14 @@ const CommunityMain = () => {
               </div>
             </div>
           </HeroSection>
-          <section></section>
+          <section className="body-section">
+            <div className="post-column">
+              <CreatePost />
+            </div>
+            <div className="side-column">
+              <Panel>Description</Panel>
+            </div>
+          </section>
 
           <p>
             You are{" "}
