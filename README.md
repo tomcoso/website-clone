@@ -44,10 +44,11 @@ Order of business:
 - add validation messages OK
 - code Verify email interface, once verified make it redirect to home OK
 
-- add username pattern for no spaces or special charaacters! <-------
+- add username pattern for no spaces or special charaacters! OK
 
 #### community
 
 - setup create community page OK
 - setup community page
+- add community banner picture to community creation fn in firebase app
 - setup security rules to handle email verified users authority OK / also with posts and comments!

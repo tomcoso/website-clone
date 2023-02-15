@@ -1,0 +1,43 @@
+main {
+  background-color: var(--bg);
+  height: 100%;
+
+  .lower-hero {
+    width: 100%;
+    background-color: var(--panel);
+    > div {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      width: clamp(80%, 900px, 95%);
+      margin: 0 auto;
+
+      align-self: center;
+      justify-content: space-between;
+
+      background-color: var(--panel);
+      color: var(--contrast);
+
+      .logo-container {
+        height: 6rem;
+        transform: translateY(-25%);
+
+        img {
+          height: 100%;
+        }
+      }
+    }
+
+    .hero-titles {
+      width: 90%;
+      h2 {
+        font-size: 2rem;
+        font-weight: bold;
+      }
+    }
+
+    .hero-join {
+      padding: 10px;
+    }
+  }
+}
