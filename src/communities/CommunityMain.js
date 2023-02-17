@@ -21,7 +21,7 @@ const Banner = styled.img`
   object-fit: cover;
 `;
 
-const CommunityMain = () => {
+const CommunityMain = (props) => {
   const commName = useParams().community;
   const user = useSelector((state) => state.user);
 
@@ -48,7 +48,7 @@ const CommunityMain = () => {
   // left side panel with 'popular feeds' or communities user is subscribed to
 
   return (
-    <main>
+    <main id="community-main">
       {typeof commData === "object" ? (
         <>
           <HeroSection>

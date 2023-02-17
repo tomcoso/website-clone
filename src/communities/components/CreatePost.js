@@ -1,8 +1,10 @@
 import Panel from "./Panel";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import styled from "styled-components";
 import { HiOutlineLink } from "react-icons/hi";
-import { CiImageOn } from "react-icons/ci";
+import { MdOutlineImage } from "react-icons/md";
+import { useSelector, useDispatch } from "react-redux";
+import { setPath } from "../../redux/redirectSlice.js";
 
 const FakeInput = styled.div`
   width: 100%;
@@ -12,6 +14,7 @@ const FakeInput = styled.div`
   padding: 8px 10px;
   border-radius: 5px;
   font-size: 0.9rem;
+  cursor: pointer;
   &:hover,
   &:focus {
     background-color: var(--panel);
@@ -41,8 +44,33 @@ const Pfp = styled.div`
   }
 `;
 
+const IconWrap = styled.div`
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  padding: 7px;
+  &:hover,
+  &:focus {
+    background-color: var(--field);
+  }
+`;
+
 const CreatePost = () => {
+  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    if (user.isLoggedIn) {
+      navigate("submit");
+    } else {
+      dispatch(setPath({ path: location.pathname }));
+      navigate("/login");
+    }
+  };
   return (
     <Panel>
       <Wrapper>
@@ -52,9 +80,13 @@ const CreatePost = () => {
             alt="user profile"
           />
         </Pfp>
-        <FakeInput onClick={() => navigate("submit")}>Create Post</FakeInput>
-        <CiImageOn size={"1.8rem"} />
-        <HiOutlineLink size={"1.7rem"} />
+        <FakeInput onClick={handleClick}>Create Post</FakeInput>
+        <IconWrap onClick={handleClick}>
+          <MdOutlineImage size={"1.5rem"} />
+        </IconWrap>
+        <IconWrap onClick={handleClick}>
+          <HiOutlineLink size={"1.5rem"} />
+        </IconWrap>
       </Wrapper>
     </Panel>
   );

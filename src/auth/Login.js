@@ -1,10 +1,13 @@
 import { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { login } from "../firebase.app";
 import ControlledInput from "../components/ControlledInput";
 import Button from "../components/Button";
 import AuthForm from "./components/AuthForm";
 import { ErrorMsg } from "./authUtility";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { clearPath } from "../redux/redirectSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -12,16 +15,19 @@ const Login = () => {
 
   const [error, setError] = useState("");
 
-  const navigate = useNavigate();
-
   const emailRef = useRef();
   const passRef = useRef();
+
+  const redirect = useSelector((state) => state.redirect);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = () => {
     login({ email, password })
       .then(() => {
         console.log("login successful");
-        navigate("/");
+        redirect.path ? navigate(redirect.path) : navigate("/");
+        dispatch(clearPath());
       })
       .catch((error) => {
         console.log(error);
@@ -61,7 +67,10 @@ const Login = () => {
         <Button action={handleSubmit}>Log in</Button>
       </AuthForm>
       <p>
-        Don't have an account? <Link to="/register">Register</Link>
+        Don't have an account?{" "}
+        <Link replace to="/register">
+          Register
+        </Link>
       </p>
     </main>
   );

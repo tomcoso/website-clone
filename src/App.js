@@ -2,7 +2,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation, Outlet } from "react-router";
-import { login, logout } from "./auth/userSlice";
+import { login, logout } from "./redux/userSlice";
 import Header from "./components/Header";
 import "./style.scss";
 import { auth } from "./firebase.app";
@@ -43,12 +43,9 @@ function App() {
   });
 
   useEffect(() => {
-    if (pathname === "/" && !user.isLoggedIn) {
-      navigate("/login");
-    }
-    if (pathname === "/login" && !!user.isLoggedIn) {
-      navigate("/");
-    }
+    // if (pathname === "/" && !user.isLoggedIn) {
+    //   navigate("/login");
+    // }
     if (
       pathname === "/register" &&
       auth.currentUser &&
