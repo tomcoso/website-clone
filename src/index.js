@@ -9,6 +9,7 @@ import Login from "./auth/Login";
 import Register from "./auth/Register";
 import CommunityMain from "./communities/CommunityMain";
 import Home from "./home/Home";
+import SubmitPost from "./communities/SubmitPost";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -21,7 +22,10 @@ root.render(
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="c">
-              <Route path=":community" element={<CommunityMain />} />
+              <Route path=":community">
+                <Route index element={<CommunityMain />} />
+                <Route path="submit" element={<SubmitPost />} />
+              </Route>
             </Route>
           </Route>
         </Routes>

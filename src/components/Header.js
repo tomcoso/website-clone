@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { change } from "../themeSlice";
+import { change } from "../redux/themeSlice";
 import { logout } from "../firebase.app";
 import styled from "styled-components";
 import Button from "./Button";
