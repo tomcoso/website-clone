@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import {
   addDoc,
+  arrayRemove,
   arrayUnion,
   collection,
   deleteDoc,
@@ -90,7 +91,7 @@ const createUser = async (email, password, username) => {
       updateProfile(userCredential.user, { displayName: username });
       sendEmailVerification(userCredential.user);
       const uid = userCredential.user.uid;
-      addDoc(_usersRef, { uid, username });
+      addDoc(_usersRef, { uid, username, subscribed: [] });
     })
     .catch((error) => {
       return Promise.reject(error.code);
@@ -130,11 +131,32 @@ const createCommunity = async (name) => {
   );
 };
 
+const updateMemberOfCommunity = async (name, action) => {
+  const cSnapshot = await getDocs(
+    query(_communitiesRef, where("name", "==", name))
+  );
+  let community;
+  cSnapshot.forEach((x) => (community = x.id));
+
+  const userDoc = await _getUserDoc(auth.currentUser.uid);
+
+  updateDoc(doc(db, "users", userDoc.id), {
+    subscribed:
+      action === "join" ? arrayUnion(community) : arrayRemove(community),
+  });
+  await updateDoc(doc(db, "communities", community), {
+    members:
+      action === "join"
+        ? arrayUnion(auth.currentUser.uid)
+        : arrayRemove(auth.currentUser.uid),
+  });
+};
+
 // TODO : make user moderator
 // TODO : unmake user moderator
 // TODO : ban user (mod)
 // TODO : unban user (mod)
-// TODO : join community
+// TODO : join community OK
 // TODO : unjoin/abandon/desubscribe/leave community
 // TODO : remove post (mod)
 // TODO : remove comment (mod)
@@ -173,4 +195,5 @@ export {
   createCommunity,
   createPost,
   deletePost,
+  updateMemberOfCommunity,
 };
