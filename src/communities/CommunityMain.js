@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { getCommunity } from "../firebase.app";
+import { getCommunity, updateMemberOfCommunity } from "../firebase.app";
 import Button from "../components/Button";
 import "./styling/communityMain.scss";
 import Panel from "./components/Panel";
@@ -21,7 +21,7 @@ const Banner = styled.img`
   object-fit: cover;
 `;
 
-const CommunityMain = (props) => {
+const CommunityMain = () => {
   const commName = useParams().community;
   const user = useSelector((state) => state.user);
 
@@ -37,7 +37,7 @@ const CommunityMain = (props) => {
         setCommData(404);
       }
     })();
-  }, [commName]);
+  }, [commName, commData]);
 
   // community hero panel (picture, name, r/name, join button)
   // post creation interface/ log in cta
@@ -69,7 +69,16 @@ const CommunityMain = (props) => {
                   <p>c/{commData.name}</p>
                 </div>
                 <div className="hero-join">
-                  <Button>JOIN</Button>
+                  <Button
+                    action={() =>
+                      updateMemberOfCommunity(
+                        commData.name,
+                        commData.members.includes(user.uid) ? "leave" : "join"
+                      )
+                    }
+                  >
+                    {commData.members.includes(user.uid) ? "Joined" : "Join"}
+                  </Button>
                 </div>
               </div>
             </div>

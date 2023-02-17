@@ -8,6 +8,11 @@ const StyledButton = styled.button`
   font-size: 1rem;
   color: var(--action);
   height: min-content;
+
+  &:hover,
+  &:focus {
+    background-color: var(--field);
+  }
 `;
 
 const Button = ({ type = "button", action = undefined, children }) => {
