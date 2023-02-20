@@ -50,9 +50,10 @@ Order of business:
 
 - setup create community page OK
 - setup community page
-  - setup /submit page (post creation) or /login redirect OK leave the rest for POSTS
-  - setup firebase fn to get posts
+  - setup /submit page (post creation) or /login redirect OK
+  - setup firebase fn to get posts OK
   - create post panel OK
   - setup firebase fn to join comm and leave, use button OK
 - add community banner picture to community creation fn in firebase app
 - setup security rules to handle email verified users authority OK / also with posts and comments!
+- finish all firebase community fns

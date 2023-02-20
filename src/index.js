@@ -10,6 +10,7 @@ import Register from "./auth/Register";
 import CommunityMain from "./communities/CommunityMain";
 import Home from "./home/Home";
 import SubmitPost from "./communities/SubmitPost";
+import CommunityAdmin from "./communities/CommunityAdmin";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -25,6 +26,7 @@ root.render(
               <Route path=":community">
                 <Route index element={<CommunityMain />} />
                 <Route path="submit" element={<SubmitPost />} />
+                <Route path="admin" element={<CommunityAdmin />} />
               </Route>
             </Route>
           </Route>
