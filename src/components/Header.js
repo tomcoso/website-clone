@@ -3,7 +3,8 @@ import { change } from "../redux/themeSlice";
 import { logout } from "../firebase.app";
 import styled from "styled-components";
 import Button from "./Button";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { setPath } from "../redux/redirectSlice";
 
 const HeaderElem = styled.header`
   width: 100vw;
@@ -19,6 +20,7 @@ const Header = () => {
   const user = useSelector((state) => state.user);
   const theme = useSelector((state) => state.theme);
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const navigate = useNavigate();
 
@@ -27,7 +29,14 @@ const Header = () => {
       {user.isLoggedIn ? (
         <Button action={logout}>Log out</Button>
       ) : (
-        <Button action={() => navigate("/login")}>Log In</Button>
+        <Button
+          action={() => {
+            dispatch(setPath({ path: location.pathname }));
+            navigate("/login");
+          }}
+        >
+          Log In
+        </Button>
       )}
       <p>{user.username}</p>
       <Button action={() => dispatch(change())}>Theme ({theme})</Button>
