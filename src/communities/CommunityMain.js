@@ -26,6 +26,7 @@ const CommunityMain = () => {
   const user = useSelector((state) => state.user);
 
   const [commData, setCommData] = useState();
+  const [update, forceUpdate] = useState();
 
   useEffect(() => {
     (async () => {
@@ -37,7 +38,7 @@ const CommunityMain = () => {
         setCommData(404);
       }
     })();
-  }, [commName, commData]);
+  }, [commName, user, update]);
 
   // community hero panel (picture, name, r/name, join button)
   // post creation interface/ log in cta
@@ -69,13 +70,16 @@ const CommunityMain = () => {
                   <p>c/{commData.name}</p>
                 </div>
                 <div className="hero-join">
+                  {console.log("update")}
                   <Button
-                    action={() =>
-                      updateMemberOfCommunity(
+                    action={async () => {
+                      console.log(commData.members.includes(user.uid));
+                      await updateMemberOfCommunity(
                         commData.name,
                         commData.members.includes(user.uid) ? "leave" : "join"
-                      )
-                    }
+                      );
+                      forceUpdate(Math.random());
+                    }}
                   >
                     {commData.members.includes(user.uid) ? "Joined" : "Join"}
                   </Button>
@@ -93,9 +97,17 @@ const CommunityMain = () => {
           </section>
 
           <p>
-            You are{" "}
-            {commData.moderators.find((x) => x === user.uid) ? "a" : "not a"}{" "}
+            You are {commData.moderators.includes(user.uid) ? "a" : "not a"}{" "}
             moderator
+            {/* {commData.moderators.includes(user.uid) ? (
+              <Button action={() => unmakeUserMod(commData.name, user.uid)}>
+                Unmod
+              </Button>
+            ) : (
+              <Button action={() => makeUserMod(commData.name, user.uid)}>
+                Mod
+              </Button>
+            )} */}
           </p>
         </>
       ) : commData === 404 ? (

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 const StyledButton = styled.button`
@@ -11,14 +12,58 @@ const StyledButton = styled.button`
 
   &:hover,
   &:focus {
-    background-color: var(--field);
+    background-color: ${(props) =>
+      props.disabled ? "var(--panel)" : "var(--field)"};
+  }
+
+  &:active {
+    transform: ${(props) =>
+      props.disabled ? "translateY(0)" : "translateY(1px)"};
+  }
+
+  &:disabled {
+    border: 1px solid var(--bg);
+    color: var(--bg);
   }
 `;
 
-const Button = ({ type = "button", action = undefined, children }) => {
-  return (
-    <StyledButton type={type} onClick={action}>
-      {children}
+const Loading = styled.div`
+  border-radius: 1rem;
+  border: 2px dashed var(--action);
+  border-left: none;
+  padding: 0.5rem;
+
+  @keyframes load {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  animation: 2s linear load infinite;
+`;
+
+const Button = ({
+  type = "button",
+  action = undefined,
+  children,
+  disabled,
+}) => {
+  const [loader, setLoader] = useState(false);
+
+  return disabled ? (
+    <StyledButton disabled>{children}</StyledButton>
+  ) : (
+    <StyledButton
+      type={type}
+      onClick={async () => {
+        setLoader(true);
+        await action();
+        setLoader(false);
+      }}
+    >
+      {loader ? <Loading /> : children}
     </StyledButton>
   );
 };

@@ -42,13 +42,22 @@ const _communitiesRef = collection(db, "communities");
 const _postsRef = collection(db, "posts");
 const _usersRef = collection(db, "users");
 
-const _getUserDoc = async (uid) => {
+const getUserDoc = async (uid) => {
   const userQSnapshot = await getDocs(
     query(_usersRef, where("uid", "==", uid))
   );
   let userDoc;
   userQSnapshot.forEach((doc) => (userDoc = doc));
   return userDoc;
+};
+
+const _getCommunityID = async (name) => {
+  const cSnapshot = await getDocs(
+    query(_communitiesRef, where("name", "==", name))
+  );
+  let community;
+  cSnapshot.forEach((x) => (community = x.id));
+  return community;
 };
 
 // USERS ----------------------------------------------------------------------
@@ -125,6 +134,7 @@ const createCommunity = async (name) => {
     moderators: [auth.currentUser.uid],
     members: [auth.currentUser.uid],
     timestamp: new Date(),
+    blacklist: [],
   };
   return await addDoc(_communitiesRef, newCommunity).catch((error) =>
     Promise.reject(error)
@@ -132,13 +142,9 @@ const createCommunity = async (name) => {
 };
 
 const updateMemberOfCommunity = async (name, action) => {
-  const cSnapshot = await getDocs(
-    query(_communitiesRef, where("name", "==", name))
-  );
-  let community;
-  cSnapshot.forEach((x) => (community = x.id));
+  const community = await _getCommunityID(name);
 
-  const userDoc = await _getUserDoc(auth.currentUser.uid);
+  const userDoc = await getUserDoc(auth.currentUser.uid);
 
   updateDoc(doc(db, "users", userDoc.id), {
     subscribed:
@@ -152,12 +158,41 @@ const updateMemberOfCommunity = async (name, action) => {
   });
 };
 
-// TODO : make user moderator
-// TODO : unmake user moderator
-// TODO : ban user (mod)
-// TODO : unban user (mod)
+const makeUserMod = async (name, uid) => {
+  const commID = await _getCommunityID(name);
+  await updateDoc(doc(db, "communities", commID), {
+    moderators: arrayUnion(uid),
+  });
+};
+
+const unmakeUserMod = async (name, uid) => {
+  const commID = await _getCommunityID(name);
+  await updateDoc(doc(db, "communities", commID), {
+    moderators: arrayRemove(uid),
+  });
+};
+
+const banUser = async (name, uid) => {
+  const commID = await _getCommunityID(name);
+  await updateDoc(doc(db, "communities", commID), {
+    blacklist: arrayUnion(uid),
+    members: arrayRemove(uid),
+  });
+};
+
+const unbanUser = async (name, uid) => {
+  const commID = await _getCommunityID(name);
+  await updateDoc(doc(db, "communities", commID), {
+    blacklist: arrayRemove(uid),
+  });
+};
+
+// TODO : make user moderator OK
+// TODO : unmake user moderator OK
+// TODO : ban user (mod) OK
+// TODO : unban user (mod) OK
 // TODO : join community OK
-// TODO : unjoin/abandon/desubscribe/leave community
+// TODO : leave community OK
 // TODO : remove post (mod)
 // TODO : remove comment (mod)
 
@@ -173,14 +208,14 @@ const createPost = async (title, content, community) => {
     comments: [],
   };
   const postRef = await addDoc(_postsRef, newPost);
-  const userDoc = _getUserDoc(auth.currentUser.uid);
+  const userDoc = getUserDoc(auth.currentUser.uid);
   updateDoc(userDoc, { posts: arrayUnion(postRef.id) });
 };
 
 const deletePost = async (postId) => {
   const postDocRef = doc(db, "posts", postId);
   const postDoc = await getDoc(postDocRef);
-  const userDoc = await _getUserDoc(auth.currentUser.uid);
+  const userDoc = await getUserDoc(auth.currentUser.uid);
   if (userDoc.data().posts.find((x) => x.user === postDoc.data().user))
     return Promise.reject(Error("not authorised"));
   return await deleteDoc(postDocRef);
@@ -196,4 +231,10 @@ export {
   createPost,
   deletePost,
   updateMemberOfCommunity,
+  makeUserMod,
+  unmakeUserMod,
+  banUser,
+  unbanUser,
+  getUserDoc,
+  // getMembersArray,
 };

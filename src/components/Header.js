@@ -27,7 +27,7 @@ const Header = () => {
       {user.isLoggedIn ? (
         <Button action={logout}>Log out</Button>
       ) : (
-        <Button action={() => navigate("/")}>Log In</Button>
+        <Button action={() => navigate("/login")}>Log In</Button>
       )}
       <p>{user.username}</p>
       <Button action={() => dispatch(change())}>Theme ({theme})</Button>
