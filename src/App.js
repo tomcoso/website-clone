@@ -43,9 +43,6 @@ function App() {
   });
 
   useEffect(() => {
-    // if (pathname === "/" && !user.isLoggedIn) {
-    //   navigate("/login");
-    // }
     if (
       pathname === "/register" &&
       auth.currentUser &&
