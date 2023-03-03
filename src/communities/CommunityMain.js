@@ -3,7 +3,10 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { getCommunity, updateMemberOfCommunity } from "../firebase.app";
+import {
+  getCommunity,
+  updateMemberOfCommunity,
+} from "../firebase/firebase.communities";
 import Button from "../components/Button";
 import "./styling/communityMain.scss";
 import Panel from "./components/Panel";

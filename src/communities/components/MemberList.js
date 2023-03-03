@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import {
   banUser,
-  getUserDoc,
   makeUserMod,
   unbanUser,
-} from "../../firebase.app";
+} from "../../firebase/firebase.communities";
+import { getUserDoc } from "../../firebase/firebase.app";
 import styled from "styled-components";
 import Button from "../../components/Button";
 

@@ -2,18 +2,23 @@ import { useState } from "react";
 import styled from "styled-components";
 
 const StyledButton = styled.button`
-  background-color: var(--panel);
+  background-color: ${(props) =>
+    props.toggle ? "var(--action)" : "var(--panel)"};
   border: var(--action) solid 1px;
   border-radius: 50px;
   padding: 5px 10px;
   font-size: 1rem;
-  color: var(--action);
+  color: ${(props) => (props.toggle ? "var(--panel)" : "var(--action)")};
   height: min-content;
 
   &:hover,
   &:focus {
     background-color: ${(props) =>
-      props.disabled ? "var(--panel)" : "var(--field)"};
+      props.disabled
+        ? "var(--panel)"
+        : props.toggle
+        ? "var(--action)"
+        : "var(--field)"};
   }
 
   &:active {
@@ -49,6 +54,7 @@ const Button = ({
   action = undefined,
   children,
   disabled,
+  toggle = false,
 }) => {
   const [loader, setLoader] = useState(false);
 
@@ -59,9 +65,10 @@ const Button = ({
       type={type}
       onClick={async () => {
         setLoader(true);
-        await action();
+        action && (await action());
         setLoader(false);
       }}
+      toggle={toggle}
     >
       {loader ? <Loading /> : children}
     </StyledButton>

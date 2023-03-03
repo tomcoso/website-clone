@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { change } from "../redux/themeSlice";
-import { logout } from "../firebase.app";
+import { logout } from "../firebase/firebase.app";
 import styled from "styled-components";
 import Button from "./Button";
 import { useLocation, useNavigate } from "react-router";
