@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import {
   addDoc,
-  arrayRemove,
   arrayUnion,
   collection,
   deleteDoc,
@@ -38,7 +37,6 @@ const db = getFirestore(app);
 
 // UTILITY --------------------------------------------------------------------
 
-const _communitiesRef = collection(db, "communities");
 const _postsRef = collection(db, "posts");
 const _usersRef = collection(db, "users");
 
@@ -49,15 +47,6 @@ const getUserDoc = async (uid) => {
   let userDoc;
   userQSnapshot.forEach((doc) => (userDoc = doc));
   return userDoc;
-};
-
-const _getCommunityID = async (name) => {
-  const cSnapshot = await getDocs(
-    query(_communitiesRef, where("name", "==", name))
-  );
-  let community;
-  cSnapshot.forEach((x) => (community = x.id));
-  return community;
 };
 
 // USERS ----------------------------------------------------------------------
@@ -109,100 +98,14 @@ const createUser = async (email, password, username) => {
   return res;
 };
 
-// COMMUNITIES ----------------------------------------------------------------
-
-const getCommunity = async (name) => {
-  const commSnapshot = await getDocs(
-    query(_communitiesRef, where("name", "==", name))
-  );
-  let data;
-  commSnapshot.forEach((doc) => (data = doc.data()));
-  return data
-    ? Promise.resolve(data)
-    : Promise.reject(Error("community-does-not-exist"));
-};
-
-const createCommunity = async (name) => {
-  const communitySnapshot = await getCountFromServer(
-    query(_communitiesRef, where("name", "==", name))
-  );
-  if (communitySnapshot.data().count > 0)
-    return Promise.reject(Error("community-already-exists"));
-  const newCommunity = {
-    name,
-    posts: [],
-    moderators: [auth.currentUser.uid],
-    members: [auth.currentUser.uid],
-    timestamp: new Date(),
-    blacklist: [],
-  };
-  return await addDoc(_communitiesRef, newCommunity).catch((error) =>
-    Promise.reject(error)
-  );
-};
-
-const updateMemberOfCommunity = async (name, action) => {
-  const community = await _getCommunityID(name);
-
-  const userDoc = await getUserDoc(auth.currentUser.uid);
-
-  updateDoc(doc(db, "users", userDoc.id), {
-    subscribed:
-      action === "join" ? arrayUnion(community) : arrayRemove(community),
-  });
-  await updateDoc(doc(db, "communities", community), {
-    members:
-      action === "join"
-        ? arrayUnion(auth.currentUser.uid)
-        : arrayRemove(auth.currentUser.uid),
-  });
-};
-
-const makeUserMod = async (name, uid) => {
-  const commID = await _getCommunityID(name);
-  await updateDoc(doc(db, "communities", commID), {
-    moderators: arrayUnion(uid),
-  });
-};
-
-const unmakeUserMod = async (name, uid) => {
-  const commID = await _getCommunityID(name);
-  await updateDoc(doc(db, "communities", commID), {
-    moderators: arrayRemove(uid),
-  });
-};
-
-const banUser = async (name, uid) => {
-  const commID = await _getCommunityID(name);
-  await updateDoc(doc(db, "communities", commID), {
-    blacklist: arrayUnion(uid),
-    members: arrayRemove(uid),
-  });
-};
-
-const unbanUser = async (name, uid) => {
-  const commID = await _getCommunityID(name);
-  await updateDoc(doc(db, "communities", commID), {
-    blacklist: arrayRemove(uid),
-  });
-};
-
-// TODO : make user moderator OK
-// TODO : unmake user moderator OK
-// TODO : ban user (mod) OK
-// TODO : unban user (mod) OK
-// TODO : join community OK
-// TODO : leave community OK
-// TODO : remove post (mod)
-// TODO : remove comment (mod)
-
 // POSTS ----------------------------------------------------------------------
 
-const createPost = async (title, content, community) => {
+const createPost = async (title, content, community, nsfw) => {
   const newPost = {
     title,
     content,
     community,
+    nsfw,
     upvotes: [auth.currentUser.uid],
     user: auth.currentUser.uid,
     comments: [],
@@ -210,31 +113,30 @@ const createPost = async (title, content, community) => {
   const postRef = await addDoc(_postsRef, newPost);
   const userDoc = getUserDoc(auth.currentUser.uid);
   updateDoc(userDoc, { posts: arrayUnion(postRef.id) });
+  updateDoc(postRef, { id: postRef.id }); // untested
 };
 
-const deletePost = async (postId) => {
+const deletePost = async (postId, commData) => {
   const postDocRef = doc(db, "posts", postId);
   const postDoc = await getDoc(postDocRef);
   const userDoc = await getUserDoc(auth.currentUser.uid);
-  if (userDoc.data().posts.find((x) => x.user === postDoc.data().user))
+  if (
+    userDoc.data().posts.find((x) => x.user !== postDoc.data().user) ||
+    commData.moderators.includes(userDoc.data().uid)
+  )
+    // untested
     return Promise.reject(Error("not authorised"));
   return await deleteDoc(postDocRef);
 };
 
 export {
+  app,
+  db,
   auth,
   login,
   logout,
   createUser,
-  getCommunity,
-  createCommunity,
   createPost,
   deletePost,
-  updateMemberOfCommunity,
-  makeUserMod,
-  unmakeUserMod,
-  banUser,
-  unbanUser,
   getUserDoc,
-  // getMembersArray,
 };

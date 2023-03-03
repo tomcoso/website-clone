@@ -1,29 +1,28 @@
-import { useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import Button from "../components/Button";
 import ControlledInput from "../components/ControlledInput";
-import { createCommunity } from "../firebase.app";
+import { createCommunity } from "../firebase/firebase.communities";
 import { ErrorMsg, handleCreationErrors } from "./components/communityUtility";
+import Panel from "./components/Panel";
 
 const Section = styled.section`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 `;
 
-const CommunityNew = ({ close }) => {
-  const sectionRef = useRef();
-
+const CommunityNew = () => {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const [nsfwToggle, setNsfwToggle] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await createCommunity(name)
+    await createCommunity(name, nsfwToggle)
       .then((res) => {
         console.log("community created succesfully");
         navigate(`/c/${name}`);
@@ -31,30 +30,31 @@ const CommunityNew = ({ close }) => {
       .catch((error) => setError(error.message));
   };
 
-  return createPortal(
-    <Section
-      ref={sectionRef}
-      onClick={(e) => {
-        if (e.target === sectionRef.current) close();
-      }}
-    >
-      <h2>Create a community</h2>
-      <form onSubmit={handleSubmit}>
-        <ControlledInput
-          type="text"
-          id="new-community-name"
-          state={name}
-          control={setName}
-          required={true}
-        >
-          Community Name
-        </ControlledInput>
-        {error !== "" && <ErrorMsg>{handleCreationErrors(error)}</ErrorMsg>}
-        <Button type="submit">Create</Button>
-      </form>
-      <Button action={close}>Cancel</Button>
-    </Section>,
-    document.getElementById("root")
+  return (
+    <Section>
+      <Panel>
+        <h2>Create a community</h2>
+        <form onSubmit={handleSubmit}>
+          <ControlledInput
+            type="text"
+            id="new-community-name"
+            state={name}
+            control={setName}
+            required={true}
+          >
+            Community Name
+          </ControlledInput>
+          <Button action={() => setNsfwToggle(!nsfwToggle)} toggle={nsfwToggle}>
+            NFSW
+          </Button>
+          {error !== "" && <ErrorMsg>{handleCreationErrors(error)}</ErrorMsg>}
+          <Button type="submit" action={() => {}}>
+            Create
+          </Button>
+        </form>
+        <Button action={() => navigate("/")}>Cancel</Button>
+      </Panel>
+    </Section>
   );
 };
 

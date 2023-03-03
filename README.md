@@ -46,7 +46,7 @@ Order of business:
 
 - add username pattern for no spaces or special charaacters! OK
 
-#### community
+#### Community
 
 - setup create community page OK
 - setup community page
@@ -56,4 +56,13 @@ Order of business:
   - setup firebase fn to join comm and leave, use button OK
 - add community banner picture to community creation fn in firebase app
 - setup security rules to handle email verified users authority OK / also with posts and comments!
-- finish all firebase community fns
+- finish all firebase community fns OK
+- buff community creation OK and add editing features on admin
+
+#### Posts
+
+- setup post creation (/submit)
+- setup comment creation
+- setup comment and post admin features
+
+#### User profile page

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { createUser } from "../firebase.app";
+import { createUser } from "../firebase/firebase.app";
 import ControlledInput from "../components/ControlledInput";
 import Button from "../components/Button";
 import RegisterErrors from "./components/RegisterErors";
