@@ -57,7 +57,8 @@ Order of business:
 - add community banner picture to community creation fn in firebase app
 - setup security rules to handle email verified users authority OK / also with posts and comments!
 - finish all firebase community fns OK
-- buff community creation OK and add editing features on admin
+- buff community creation OK and add editing features on admin OK
+- update comm banner and profile to use url from settings
 
 #### Posts
 
