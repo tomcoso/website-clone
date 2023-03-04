@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router";
 import { setPath } from "../redux/redirectSlice";
 
 const HeaderElem = styled.header`
-  width: 100vw;
+  width: 100svw;
   height: 8vh;
   display: flex;
   gap: 1rem;

@@ -24,6 +24,18 @@ const Banner = styled.img`
   object-fit: cover;
 `;
 
+const Profile = styled.div`
+  max-height: 6rem;
+  aspect-ratio: 1/1;
+  transform: translateY(-25%);
+  border-radius: 100%;
+  overflow: hidden;
+
+  img {
+    height: 100%;
+  }
+`;
+
 const CommunityMain = () => {
   const commName = useParams().community;
   const user = useSelector((state) => state.user);
@@ -56,24 +68,17 @@ const CommunityMain = () => {
       {typeof commData === "object" ? (
         <>
           <HeroSection>
-            <Banner
-              src="https://firebasestorage.googleapis.com/v0/b/coralit-media.appspot.com/o/elementor-placeholder-image.png?alt=media&token=0747eb9b-2505-4bd5-868a-482b0b2576ae"
-              alt="placeholder"
-            />
+            <Banner src={commData.settings.banner} alt="placeholder" />
             <div className="lower-hero">
               <div>
-                <div className="logo-container">
-                  <img
-                    src="https://firebasestorage.googleapis.com/v0/b/coralit-media.appspot.com/o/Cnobg.png?alt=media&token=9b94b7e9-47bc-42a8-ba0f-0c8e6bd304bd"
-                    alt="logo"
-                  />
-                </div>
+                <Profile>
+                  <img src={commData.settings.profile} alt="logo" />
+                </Profile>
                 <div className="hero-titles">
                   <h2>{commData.name}</h2>
                   <p>c/{commData.name}</p>
                 </div>
                 <div className="hero-join">
-                  {console.log("update")}
                   <Button
                     action={async () => {
                       console.log(commData.members.includes(user.uid));

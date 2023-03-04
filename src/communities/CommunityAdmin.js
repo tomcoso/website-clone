@@ -11,6 +11,8 @@ import Button from "../components/Button";
 import MemberList from "./components/MemberList";
 import uniqid from "uniqid";
 import styled from "styled-components";
+import "./styling/communityAdmin.scss";
+import { Link } from "react-router-dom";
 
 const Column = styled.div`
   display: flex;
@@ -21,7 +23,7 @@ const Column = styled.div`
 
 const ColumnWrap = styled.div`
   display: grid;
-  grid: 1fr / 1fr 1fr;
+  grid: var(--column-grid);
   gap: 1rem;
 `;
 
@@ -49,12 +51,16 @@ const CommunityAdmin = () => {
   const [nsfw, setNsfw] = useState();
   const [banner, setBanner] = useState();
   const [profile, setProfile] = useState();
+  const [changes, setChanges] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
         const data = await getCommunity(commName);
         setCommData(data);
+        setNsfw(data.settings.nsfw);
+        setBanner(data.settings.banner);
+        setProfile(data.settings.profile);
       } catch (error) {
         console.log("404", error);
         setCommData(404);
@@ -62,25 +68,39 @@ const CommunityAdmin = () => {
     })();
   }, [commName, setCommData, update]);
 
-  useEffect(() => {
-    if (commData === null) return;
-    setNsfw(commData.settings.nsfw);
-    setBanner(commData.settings.banner);
-    setProfile(commData.settings.profile);
-  }, [commData]);
-
   const handleSettingsUpdate = async () => {
     const settings = { banner, nsfw, profile };
     await updateSettings(commData.name, settings);
+    forceUpdate(Math.random());
+    setChanges(false);
   };
 
+  useEffect(() => {
+    if (
+      commData === null ||
+      (commData &&
+        commData.settings.nsfw === nsfw &&
+        commData.settings.banner === banner &&
+        commData.settings.profile === profile)
+    ) {
+      setChanges((x) => (x ? false : x));
+      return;
+    }
+    setChanges((x) => (x ? x : true));
+  }, [nsfw, banner, profile, commData]);
+
   return (
-    <main>
+    <main id="community-admin">
       {commData ? (
         <div>
           {commData.moderators.includes(user.uid) ? (
             <>
-              <Panel>Moderators Control Panel</Panel>
+              <Panel>
+                <Link to={`/c/${commName}`}>
+                  <h3>c/{commName}</h3>
+                </Link>
+                <p>Moderators Control Panel</p>
+              </Panel>
               <ColumnWrap>
                 <Column>
                   <Panel>
@@ -104,15 +124,19 @@ const CommunityAdmin = () => {
                   <Panel>
                     <h4>Blacklisted Users</h4>
                     <ul>
-                      {commData.blacklist.map((x) => (
-                        <MemberList
-                          uid={x}
-                          key={uniqid()}
-                          status={"Blacklisted"}
-                          community={commName}
-                          update={() => forceUpdate(Math.random())}
-                        />
-                      ))}
+                      {commData.blacklist.length > 0 ? (
+                        commData.blacklist.map((x) => (
+                          <MemberList
+                            uid={x}
+                            key={uniqid()}
+                            status={"Blacklisted"}
+                            community={commName}
+                            update={() => forceUpdate(Math.random())}
+                          />
+                        ))
+                      ) : (
+                        <p>Great! No banned users ...</p>
+                      )}
                     </ul>
                   </Panel>
                 </Column>
@@ -145,7 +169,7 @@ const CommunityAdmin = () => {
                         />
                       </SettingItem>
                     </SettingsWrap>
-                    <Button action={handleSettingsUpdate}>
+                    <Button action={handleSettingsUpdate} disabled={!changes}>
                       Submit Changes
                     </Button>
                   </Panel>
