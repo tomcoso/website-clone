@@ -58,7 +58,8 @@ Order of business:
 - setup security rules to handle email verified users authority OK / also with posts and comments!
 - finish all firebase community fns OK
 - buff community creation OK and add editing features on admin OK
-- update comm banner and profile to use url from settings
+- update comm banner and profile to use url from settings OK
+- add title and description settings
 
 #### Posts
 
@@ -67,3 +68,8 @@ Order of business:
 - setup comment and post admin features
 
 #### User profile page
+
+#### Misc
+
+- give nsfw warning on communities u are not member of
+-

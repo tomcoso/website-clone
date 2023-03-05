@@ -37,9 +37,9 @@ const SettingsWrap = styled.div`
 const SettingItem = styled.div`
   display: flex;
   background-color: var(--field);
-  flex-direction: row;
+  flex-direction: column;
   padding: 0.5rem;
-  gap: 1rem;
+  gap: 0.5rem;
 `;
 
 const CommunityAdmin = () => {
@@ -48,56 +48,66 @@ const CommunityAdmin = () => {
   const [commData, setCommData] = useState(null);
   const [update, forceUpdate] = useState();
 
-  const [nsfw, setNsfw] = useState();
-  const [banner, setBanner] = useState();
-  const [profile, setProfile] = useState();
   const [changes, setChanges] = useState(false);
+  const [settings, setSettings] = useState({
+    title: "",
+    desc: "",
+    banner: "",
+    profile: "",
+    nsfw: "",
+  });
 
   useEffect(() => {
     (async () => {
       try {
         const data = await getCommunity(commName);
         setCommData(data);
-        setNsfw(data.settings.nsfw);
-        setBanner(data.settings.banner);
-        setProfile(data.settings.profile);
+        setSettings(data.settings);
       } catch (error) {
         console.log("404", error);
         setCommData(404);
       }
     })();
-  }, [commName, setCommData, update]);
+  }, [commName, update]);
 
   const handleSettingsUpdate = async () => {
-    const settings = { banner, nsfw, profile };
     await updateSettings(commData.name, settings);
     forceUpdate(Math.random());
     setChanges(false);
   };
 
+  const deepEqual = (first, second) => {
+    for (const key of Object.keys(first)) {
+      if (first[key] !== second[key]) {
+        return false;
+      }
+      continue;
+    }
+    return true;
+  };
+
   useEffect(() => {
     if (
       commData === null ||
-      (commData &&
-        commData.settings.nsfw === nsfw &&
-        commData.settings.banner === banner &&
-        commData.settings.profile === profile)
+      (commData && deepEqual(commData.settings, settings))
     ) {
-      setChanges((x) => (x ? false : x));
+      setChanges(false);
       return;
     }
-    setChanges((x) => (x ? x : true));
-  }, [nsfw, banner, profile, commData]);
+    setChanges(true);
+  }, [settings, commData]);
 
   return (
     <main id="community-admin">
+      {console.log("update")}
       {commData ? (
         <div>
           {commData.moderators.includes(user.uid) ? (
             <>
               <Panel>
                 <Link to={`/c/${commName}`}>
-                  <h3>c/{commName}</h3>
+                  <h3>{commData.settings.title}</h3>
+                  <p>c/{commData.name}</p>
                 </Link>
                 <p>Moderators Control Panel</p>
               </Panel>
@@ -145,27 +155,91 @@ const CommunityAdmin = () => {
                     <h4>Community Settings</h4>
                     <SettingsWrap>
                       <SettingItem>
-                        <p>Change Banner Image</p>
+                        <label htmlFor="change-comm-title">
+                          Change Community Title
+                        </label>
                         <input
-                          type={"file"}
-                          accept={".jpg,.jpeg,.png"}
-                          onChange={(e) => setBanner(e.target.files[0])}
+                          type={"text"}
+                          id="change-comm-title"
+                          value={settings.title}
+                          onChange={(e) =>
+                            setSettings((x) =>
+                              Object.assign({}, x, {
+                                title: e.target.value,
+                              })
+                            )
+                          }
                         />
                       </SettingItem>
                       <SettingItem>
-                        <p>Change Community Profile Picture</p>
-                        <input
-                          type={"file"}
-                          accept={".jpg,.jpeg,.png"}
-                          onChange={(e) => setProfile(e.target.files[0])}
+                        <label htmlFor="change-comm-desc">
+                          Change Community Description
+                        </label>
+                        <textarea
+                          id="change-comm-desc"
+                          value={settings.desc}
+                          onChange={(e) =>
+                            setSettings((x) =>
+                              Object.assign({}, x, {
+                                desc: e.target.value,
+                              })
+                            )
+                          }
                         />
                       </SettingItem>
                       <SettingItem>
-                        <p>Adult Content</p>
+                        <label htmlFor="change-comm-banner">
+                          Change Banner Image
+                        </label>
                         <input
+                          id="change-comm-banner"
+                          type={"file"}
+                          accept={".jpg,.jpeg,.png"}
+                          onChange={(e) => {
+                            setSettings((x) =>
+                              Object.assign({}, x, {
+                                banner:
+                                  e.target.files.length === 0
+                                    ? commData.settings.banner
+                                    : e.target.files[0],
+                              })
+                            );
+                          }}
+                        />
+                      </SettingItem>
+                      <SettingItem>
+                        <label htmlFor="change-comm-profile">
+                          Change Community Profile Picture
+                        </label>
+                        <input
+                          id="change-comm-profile"
+                          type={"file"}
+                          accept={".jpg,.jpeg,.png"}
+                          onChange={(e) =>
+                            setSettings((x) =>
+                              Object.assign({}, x, {
+                                profile:
+                                  e.target.files.length === 0
+                                    ? commData.settings.profile
+                                    : e.target.files[0],
+                              })
+                            )
+                          }
+                        />
+                      </SettingItem>
+                      <SettingItem>
+                        <label htmlFor="change-comm-nsfw">Adult Content</label>
+                        <input
+                          id="change-comm-nsfw"
                           type="checkbox"
-                          checked={!!nsfw}
-                          onChange={() => setNsfw(!nsfw)}
+                          checked={!!settings.nsfw}
+                          onChange={() =>
+                            setSettings((x) =>
+                              Object.assign({}, x, {
+                                nsfw: !settings.nsfw,
+                              })
+                            )
+                          }
                         />
                       </SettingItem>
                     </SettingsWrap>

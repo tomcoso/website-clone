@@ -53,6 +53,8 @@ const createCommunity = async (name, nsfw) => {
       banner: "",
       nsfw,
       profile: "",
+      title: name,
+      desc: `This is ${name}. The greatest community on Coralit.`,
     },
   };
   return await addDoc(_communitiesRef, newCommunity).catch((error) =>
