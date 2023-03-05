@@ -17,7 +17,7 @@ const Item = styled.li`
   border-bottom: 1px solid var(--accent);
 
   > p:first-child {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: bold;
   }
 `;
@@ -39,7 +39,7 @@ const MemberList = ({ uid, status, community, update }) => {
   return (
     <Item>
       <p>{userData ? userData.username : "..."}</p>
-      <p>{status}</p>
+      <p>{status === "Moderator" && "Mod"}</p>
       <Button action={() => console.log("TODO")}>Posts</Button>
       <Button action={() => console.log("TODO")}>Comments</Button>
       {status !== "Blacklisted" ? (
@@ -60,7 +60,7 @@ const MemberList = ({ uid, status, community, update }) => {
             }}
             disabled={status === "Moderator"}
           >
-            Make Moderator
+            Make Mod
           </Button>
         </>
       ) : (
