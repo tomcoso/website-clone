@@ -59,7 +59,8 @@ Order of business:
 - finish all firebase community fns OK
 - buff community creation OK and add editing features on admin OK
 - update comm banner and profile to use url from settings OK
-- add title and description settings
+- add title and description settings OK
+- change admin panel into sidebar with views
 
 #### Posts
 
@@ -72,4 +73,4 @@ Order of business:
 #### Misc
 
 - give nsfw warning on communities u are not member of
--
+- reorganise firebase apps into separate topic modules
