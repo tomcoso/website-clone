@@ -7,7 +7,8 @@ const StyledButton = styled.button`
   border: var(--action) solid 1px;
   border-radius: 50px;
   padding: 5px 10px;
-  font-size: 1rem;
+  font-size: 0.8rem;
+  font-weight: bold;
   color: ${(props) => (props.toggle ? "var(--panel)" : "var(--action)")};
   height: min-content;
 

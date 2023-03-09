@@ -8,7 +8,7 @@ import { setPath } from "../redux/redirectSlice";
 
 const HeaderElem = styled.header`
   width: 100svw;
-  height: 8vh;
+  height: 8svh;
   display: flex;
   gap: 1rem;
   align-items: center;

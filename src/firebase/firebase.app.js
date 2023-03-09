@@ -1,16 +1,11 @@
 import { initializeApp } from "firebase/app";
 import {
   addDoc,
-  arrayUnion,
   collection,
-  deleteDoc,
-  doc,
   getCountFromServer,
-  getDoc,
   getDocs,
   getFirestore,
   query,
-  updateDoc,
   where,
 } from "firebase/firestore";
 import {
@@ -37,7 +32,6 @@ const db = getFirestore(app);
 
 // UTILITY --------------------------------------------------------------------
 
-const _postsRef = collection(db, "posts");
 const _usersRef = collection(db, "users");
 
 const getUserDoc = async (uid) => {
@@ -100,43 +94,4 @@ const createUser = async (email, password, username) => {
 
 // POSTS ----------------------------------------------------------------------
 
-const createPost = async (title, content, community, nsfw) => {
-  const newPost = {
-    title,
-    content,
-    community,
-    nsfw,
-    upvotes: [auth.currentUser.uid],
-    user: auth.currentUser.uid,
-    comments: [],
-  };
-  const postRef = await addDoc(_postsRef, newPost);
-  const userDoc = getUserDoc(auth.currentUser.uid);
-  updateDoc(userDoc, { posts: arrayUnion(postRef.id) });
-  updateDoc(postRef, { id: postRef.id }); // untested
-};
-
-const deletePost = async (postId, commData) => {
-  const postDocRef = doc(db, "posts", postId);
-  const postDoc = await getDoc(postDocRef);
-  const userDoc = await getUserDoc(auth.currentUser.uid);
-  if (
-    userDoc.data().posts.find((x) => x.user !== postDoc.data().user) ||
-    commData.moderators.includes(userDoc.data().uid)
-  )
-    // untested
-    return Promise.reject(Error("not authorised"));
-  return await deleteDoc(postDocRef);
-};
-
-export {
-  app,
-  db,
-  auth,
-  login,
-  logout,
-  createUser,
-  createPost,
-  deletePost,
-  getUserDoc,
-};
+export { app, db, auth, login, logout, createUser, getUserDoc };

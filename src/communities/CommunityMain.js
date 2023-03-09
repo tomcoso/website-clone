@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import {
   getCommunity,
   updateMemberOfCommunity,
 } from "../firebase/firebase.communities";
+import uniqid from "uniqid";
 import Button from "../components/Button";
 import "./styling/communityMain.scss";
 import Panel from "./components/Panel";
 import CreatePost from "./components/CreatePost";
+import Post from "../posts/components/Post";
+import NoCommunity from "../components/NoCommunity";
 
 const HeroSection = styled.section`
   width: 100%;
@@ -98,6 +100,8 @@ const CommunityMain = () => {
           <section className="body-section">
             <div className="post-column">
               <CreatePost />
+              {commData &&
+                commData.posts.map((x) => <Post postID={x} key={uniqid()} />)}
             </div>
             <div className="side-column">
               <Panel>Description</Panel>
@@ -107,22 +111,10 @@ const CommunityMain = () => {
           <p>
             You are {commData.moderators.includes(user.uid) ? "a" : "not a"}{" "}
             moderator
-            {/* {commData.moderators.includes(user.uid) ? (
-              <Button action={() => unmakeUserMod(commData.name, user.uid)}>
-                Unmod
-              </Button>
-            ) : (
-              <Button action={() => makeUserMod(commData.name, user.uid)}>
-                Mod
-              </Button>
-            )} */}
           </p>
         </>
       ) : commData === 404 ? (
-        <p>
-          This community does not exist! You should head{" "}
-          <Link to="/">back</Link> now.
-        </p>
+        <NoCommunity />
       ) : (
         <p>Loading...</p>
       )}

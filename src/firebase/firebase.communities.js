@@ -130,6 +130,14 @@ const unbanUser = async (name, uid) => {
   });
 };
 
+const addPostToCommunity = async (name, postID) => {
+  const commID = await _getCommunityID(name);
+
+  updateDoc(doc(db, "communities", commID), {
+    posts: arrayUnion(postID),
+  });
+};
+
 // TODO : make user moderator OK
 // TODO : unmake user moderator OK
 // TODO : ban user (mod) OK
@@ -148,4 +156,5 @@ export {
   unmakeUserMod,
   banUser,
   unbanUser,
+  addPostToCommunity,
 };

@@ -64,7 +64,12 @@ Order of business:
 
 #### Posts
 
-- setup post creation (/submit)
+- setup post creation (/submit) OKish
+- add image or post sections, add spoiler tag
+- post main page
+- post panel component
+- post admin popup panel
+- post admin options on mod admin page
 - setup comment creation
 - setup comment and post admin features
 

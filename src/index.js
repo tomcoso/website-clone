@@ -9,9 +9,10 @@ import Login from "./auth/Login";
 import Register from "./auth/Register";
 import CommunityMain from "./communities/CommunityMain";
 import Home from "./home/Home";
-import SubmitPost from "./communities/SubmitPost";
+import SubmitPost from "./posts/SubmitPost";
 import CommunityAdmin from "./communities/CommunityAdmin";
 import CommunityNew from "./communities/CommunityNew";
+import PostMain from "./posts/PostMain";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -29,6 +30,9 @@ root.render(
                 <Route index element={<CommunityMain />} />
                 <Route path="submit" element={<SubmitPost />} />
                 <Route path="admin" element={<CommunityAdmin />} />
+                <Route path="post">
+                  <Route path=":postid" element={<PostMain />} />
+                </Route>
               </Route>
             </Route>
           </Route>

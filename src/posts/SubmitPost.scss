@@ -1,0 +1,67 @@
+#community-submit {
+  display: flex;
+  justify-content: center;
+  background-color: var(--bg);
+  min-height: 92dvh;
+  padding: 1rem;
+
+  .panel-wrap {
+    width: clamp(50%, 900px, 95%);
+    display: grid;
+    grid: 1fr / 2fr 1fr;
+    gap: 1.5rem;
+
+    > div {
+      height: min-content;
+    }
+  }
+
+  ul.submit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem;
+
+    li {
+      list-style-type: none;
+
+      input,
+      textarea {
+        width: 100%;
+        font-size: 1rem;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--border);
+        background-color: var(--panel);
+        resize: none;
+      }
+    }
+
+    textarea {
+      height: 8rem;
+    }
+  }
+
+  .side-panel-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    div.rules-header {
+      border-bottom: 1px solid var(--field);
+      padding: 0.8rem;
+      h3 {
+        font-size: 1rem;
+      }
+    }
+
+    ul.coralit-rules {
+      li {
+        list-style-type: none;
+        border-bottom: 1px solid var(--field);
+        padding: 0.6rem;
+        font-weight: bold;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
