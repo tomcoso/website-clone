@@ -9,7 +9,6 @@ const uploadImage = async (folder, file) => {
   const folderRef = ref(storage, folder);
   await uploadBytes(folderRef, file).then((snapshot) => {
     imageRef = snapshot;
-    // console.log("Image uploaded succesfully", snapshot);
   });
   return Promise.resolve(imageRef);
 };

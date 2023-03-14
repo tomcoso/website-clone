@@ -9,15 +9,31 @@ import {
 import Button from "../components/Button";
 import NoCommunity from "../components/NoCommunity";
 import { createPost } from "../firebase/firebase.posts";
+import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { clear } from "../redux/draftSlice";
+import ImagePost from "./components/ImagePost";
+import TextPost from "./components/TextPost";
+
+const Nav = styled.nav`
+  display: flex;
+`;
+
+const NavItem = styled.div`
+  border-bottom: 2px solid
+    ${(props) => (props.selected ? "var(--action)" : "var(--border)")};
+  padding: 1rem;
+`;
 
 const SubmitPost = () => {
   const commName = useParams().community;
   const [commData, setCommData] = useState();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
 
-  // const [type, setType] = useState("post");
+  const [type, setType] = useState("post");
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(null);
   const [nsfw, setNsfw] = useState(false);
 
   useEffect(() => {
@@ -40,7 +56,7 @@ const SubmitPost = () => {
     if (!isValid()) return;
     let postID;
     let error;
-    await createPost(title, content, commName, nsfw)
+    await createPost(title, content, commName, nsfw, type)
       .then((res) => (postID = res))
       .catch((err) => (error = err));
     if (error) return;
@@ -48,11 +64,39 @@ const SubmitPost = () => {
     navigate(`/c/${commName}/post/${postID}`);
   };
 
+  const dispatch = useDispatch();
+  const handleCancel = () => {
+    dispatch(clear());
+    navigate(`/c/${commName}`);
+  };
+
   return (
     <main id="community-submit">
       {typeof commData === "object" ? (
         <div className="panel-wrap">
           <Panel>
+            <Nav>
+              <NavItem
+                selected={type === "post"}
+                onClick={() => {
+                  if (type === "post") return;
+                  setType("post");
+                  setContent("");
+                }}
+              >
+                Post
+              </NavItem>
+              <NavItem
+                selected={type === "image"}
+                onClick={() => {
+                  if (type === "image") return;
+                  setType("image");
+                  setContent([]);
+                }}
+              >
+                Image
+              </NavItem>
+            </Nav>
             <ul className="submit-form">
               <li>
                 <input
@@ -64,13 +108,11 @@ const SubmitPost = () => {
                 ></input>
               </li>
               <li>
-                <textarea
-                  id="post-content"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Text (optional)"
-                  aria-label="Content (text)"
-                ></textarea>
+                {type === "post" ? (
+                  <TextPost user={user} />
+                ) : (
+                  <ImagePost user={user} />
+                )}
               </li>
               <li>
                 <Button toggle={!!nsfw} action={() => setNsfw((x) => !x)}>
@@ -78,9 +120,7 @@ const SubmitPost = () => {
                 </Button>
               </li>
               <li>
-                <Button action={() => navigate(`/c/${commName}`)}>
-                  Cancel
-                </Button>
+                <Button action={handleCancel}>Cancel</Button>
                 <Button disabled={!isValid()} action={handleSubmit}>
                   Post
                 </Button>

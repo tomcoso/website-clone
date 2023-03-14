@@ -8,13 +8,14 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { auth, db, getUserDoc } from "./firebase.app";
+import { uploadImage, getImageURL } from "./firebase.storage";
 
 const _postsRef = collection(db, "posts");
 
-const createPost = async (title, content, community, nsfw) => {
+const createPost = async (title, content, community, nsfw, type) => {
   const newPost = {
     title,
-    content,
+    content: "",
     community,
     nsfw,
     upvotes: [auth.currentUser.uid],
@@ -24,7 +25,18 @@ const createPost = async (title, content, community, nsfw) => {
   try {
     const postRef = await addDoc(_postsRef, newPost);
     const userDoc = await getUserDoc(auth.currentUser.uid);
-    updateDoc(postRef, { id: postRef.id });
+
+    if (type === "image") {
+      var imageURL;
+
+      await uploadImage(`communities/${community}/posts/${postRef.id}`, content)
+        .then(async (snapshot) => (imageURL = await getImageURL(snapshot.ref)))
+        .catch((err) => console.error("Could not upload image ", err));
+
+      updateDoc(postRef, { id: postRef.id, content: imageURL });
+    } else {
+      updateDoc(postRef, { id: postRef.id });
+    }
     updateDoc(doc(db, "users", userDoc.id), { posts: arrayUnion(postRef.id) });
     return postRef.id;
   } catch (error) {

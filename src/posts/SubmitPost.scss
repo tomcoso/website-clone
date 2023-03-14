@@ -33,11 +33,38 @@
         border: 1px solid var(--border);
         background-color: var(--panel);
         resize: none;
+        border-radius: 4px;
       }
     }
 
     textarea {
       height: 8rem;
+    }
+  }
+
+  div.image-drop-wrap {
+    padding: 0.75rem;
+    border-radius: 4px;
+    height: min-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 0.5rem;
+
+    > p {
+      color: var(--action);
+      margin: 3rem auto;
+      justify-self: center;
+    }
+
+    label {
+      color: var(--action);
+    }
+
+    input#image-drop {
+      border: none;
+      display: none;
     }
   }
 
