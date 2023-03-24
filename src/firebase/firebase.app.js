@@ -1,11 +1,15 @@
 import { initializeApp } from "firebase/app";
 import {
   addDoc,
+  arrayRemove,
+  arrayUnion,
   collection,
+  doc,
   getCountFromServer,
   getDocs,
   getFirestore,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import {
@@ -92,6 +96,40 @@ const createUser = async (email, password, username) => {
   return res;
 };
 
-// POSTS ----------------------------------------------------------------------
+const updateDraft = async (draft) => {
+  const userDoc = await getUserDoc(auth.currentUser.uid);
+  await updateDoc(doc(db, "users", userDoc.id), { draft });
+};
 
-export { app, db, auth, login, logout, createUser, getUserDoc };
+const addContentToDraft = async (item) => {
+  const userDoc = await getUserDoc(auth.currentUser.uid);
+  await updateDoc(doc(db, "users", userDoc.id), {
+    "draft.content": arrayUnion(item),
+  });
+};
+
+const removeContentFromDraft = async (item) => {
+  const userDoc = await getUserDoc(auth.currentUser.uid);
+  await updateDoc(doc(db, "users", userDoc.id), {
+    "draft.content": arrayRemove(item),
+  });
+};
+
+const getDraft = async (uid) => {
+  const userSnap = await getUserDoc(uid);
+  return userSnap.data().draft;
+};
+
+export {
+  app,
+  db,
+  auth,
+  login,
+  logout,
+  createUser,
+  getUserDoc,
+  updateDraft,
+  getDraft,
+  addContentToDraft,
+  removeContentFromDraft,
+};

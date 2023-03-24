@@ -1,19 +1,36 @@
+// COMPONENTS
 import Panel from "../communities/components/Panel";
-import { useState, useEffect } from "react";
+import ImagePost from "./components/ImagePost";
+import TextPost from "./components/TextPost";
+import Button from "../components/Button";
+import NoCommunity from "../components/NoCommunity";
+
+// CSS
 import "./SubmitPost.scss";
+import styled from "styled-components";
+
+// REACT
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
+
+// REDUX
+import { useDispatch, useSelector } from "react-redux";
+import {
+  clear,
+  updateTitle,
+  updateNSFW,
+  updateContent,
+  updateType,
+} from "../redux/draftSlice";
+
+// FIREBASE
 import {
   addPostToCommunity,
   getCommunity,
 } from "../firebase/firebase.communities";
-import Button from "../components/Button";
-import NoCommunity from "../components/NoCommunity";
 import { createPost } from "../firebase/firebase.posts";
-import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { clear } from "../redux/draftSlice";
-import ImagePost from "./components/ImagePost";
-import TextPost from "./components/TextPost";
+import { getDraft, updateDraft } from "../firebase/firebase.app";
+import { deleteDraftFiles } from "../firebase/firebase.storage";
 
 const Nav = styled.nav`
   display: flex;
@@ -26,16 +43,16 @@ const NavItem = styled.div`
 `;
 
 const SubmitPost = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const commName = useParams().community;
   const [commData, setCommData] = useState();
-  const navigate = useNavigate();
+
   const user = useSelector((state) => state.user);
+  const draft = useSelector((state) => state.draft);
 
-  const [type, setType] = useState("post");
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState(null);
-  const [nsfw, setNsfw] = useState(false);
-
+  // fetch community data
   useEffect(() => {
     (async () => {
       try {
@@ -48,26 +65,73 @@ const SubmitPost = () => {
     })();
   }, [commName]);
 
+  // gets draft from firebase and sets it on redux state
+  useEffect(() => {
+    const applyState = (data) => {
+      dispatch(updateTitle(data.title || ""));
+      dispatch(updateNSFW(data.nsfw));
+      dispatch(updateType(data.type || "post"));
+      dispatch(updateContent(data.content));
+    };
+
+    (async () => {
+      if (!user.uid) return;
+      const draft = await getDraft(user.uid);
+      console.log(draft);
+      applyState(draft);
+    })();
+  }, [user, dispatch]);
+
   const isValid = () => {
-    return title.match(/(.+\s){2,}.+[\W\s]*/g);
+    if (typeof title !== "string") return;
+    return draft.title.match(/(.+\s){2,}.+[\W\s]*/g);
   };
 
   const handleSubmit = async () => {
     if (!isValid()) return;
     let postID;
-    let error;
-    await createPost(title, content, commName, nsfw, type)
-      .then((res) => (postID = res))
-      .catch((err) => (error = err));
-    if (error) return;
-    await addPostToCommunity(commName, postID);
-    navigate(`/c/${commName}/post/${postID}`);
+    try {
+      await createPost(
+        draft.title,
+        draft.content,
+        commName,
+        draft.nsfw,
+        draft.type
+      ).then((res) => (postID = res));
+      await addPostToCommunity(commName, postID);
+      navigate(`/c/${commName}/post/${postID}`);
+      updateDraft({}, user.uid);
+      dispatch(clear());
+    } catch (error) {
+      console.error("Error while trying to create post", error);
+    }
   };
 
-  const dispatch = useDispatch();
+  // on cancel it saves the draft on firestore and clears state
   const handleCancel = () => {
+    updateDraft(draft, user.uid);
     dispatch(clear());
     navigate(`/c/${commName}`);
+  };
+
+  const handleTitleChange = (e) => {
+    dispatch(updateTitle(e.target.value));
+  };
+
+  const handleNsfwChange = (e) => {
+    dispatch(updateNSFW(!draft.nsfw));
+  };
+
+  const handleTypeChange = (newval) => {
+    if (draft.type === newval) return;
+    if (draft.type === "image") deleteDraftFiles(user.uid);
+    dispatch(updateType(newval));
+    const newDraft = {
+      ...draft,
+      content: newval === "post" ? "" : [],
+      type: newval,
+    };
+    updateDraft(newDraft, user.uid);
   };
 
   return (
@@ -77,22 +141,14 @@ const SubmitPost = () => {
           <Panel>
             <Nav>
               <NavItem
-                selected={type === "post"}
-                onClick={() => {
-                  if (type === "post") return;
-                  setType("post");
-                  setContent("");
-                }}
+                selected={draft.type === "post"}
+                onClick={() => handleTypeChange("post")}
               >
                 Post
               </NavItem>
               <NavItem
-                selected={type === "image"}
-                onClick={() => {
-                  if (type === "image") return;
-                  setType("image");
-                  setContent([]);
-                }}
+                selected={draft.type === "image"}
+                onClick={() => handleTypeChange("image")}
               >
                 Image
               </NavItem>
@@ -101,21 +157,22 @@ const SubmitPost = () => {
               <li>
                 <input
                   id="post-title"
-                  onChange={(e) => setTitle(e.target.value)}
-                  value={title}
+                  type={"text"}
+                  onChange={handleTitleChange}
+                  value={draft.title}
                   placeholder="Title"
                   aria-label="Title"
                 ></input>
               </li>
               <li>
-                {type === "post" ? (
-                  <TextPost user={user} />
+                {draft.type === "post" ? (
+                  <TextPost />
                 ) : (
                   <ImagePost user={user} />
                 )}
               </li>
               <li>
-                <Button toggle={!!nsfw} action={() => setNsfw((x) => !x)}>
+                <Button toggle={!!draft.nsfw} action={handleNsfwChange}>
                   + NSFW
                 </Button>
               </li>

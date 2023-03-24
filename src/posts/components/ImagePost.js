@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../../components/Button";
-import { addImg } from "../../redux/draftSlice";
+import { addImg, removeImg } from "../../redux/draftSlice";
 import uniqid from "uniqid";
 import styled from "styled-components";
 import { IoIosAdd } from "react-icons/io";
+import { RxCross2 } from "react-icons/rx";
+import { useEffect } from "react";
 
 const DisplayImage = styled.div`
   width: 5.5rem;
@@ -17,6 +19,7 @@ const DisplayImage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 
   &:hover,
   &:focus {
@@ -28,6 +31,27 @@ const DisplayImage = styled.div`
     height: 100%;
     object-fit: cover;
   }
+
+  > div.remove-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    border-radius: 100%;
+    height: 1.7rem;
+    aspect-ratio: 1/1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover,
+    &:focus {
+      background-color: #fff8;
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
 `;
 
 const ImageDrop = styled.div`
@@ -36,14 +60,26 @@ const ImageDrop = styled.div`
 `;
 
 const ImagePost = ({ user }) => {
-  const [content, setContent] = useState([]);
   const [fileHover, setFileHover] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const draft = useSelector((state) => state.draft);
   const theme = useSelector((state) => state.theme);
+
   const dispatch = useDispatch();
 
-  const handleFileDrop = (e) => {
+  useEffect(() => {
+    setLoading(false);
+  }, [draft]);
+
+  const handleFileDrop = async (e) => {
     e.preventDefault();
+    if (
+      draft.content !== null &&
+      draft.content.length + e.dataTransfer.items.length > 5
+    )
+      return;
+    setLoading(true);
     [...e.dataTransfer.items].forEach((item) => {
       if (item.kind !== "file") return;
       dispatch(addImg({ uid: user.uid, image: item.getAsFile() }));
@@ -51,16 +87,20 @@ const ImagePost = ({ user }) => {
   };
 
   const handleFileInput = (e) => {
-    console.log(e);
+    if (
+      draft.content !== null &&
+      draft.content.length + e.target.files.length > 5
+    )
+      return;
+    setLoading(true);
     [...e.target.files].forEach((file) => {
       dispatch(addImg({ uid: user.uid, image: file }));
     });
   };
 
-  useEffect(() => {
-    if (draft && !draft.content) return;
-    setContent(draft.content);
-  }, [draft]);
+  const handleRemove = async (url) => {
+    dispatch(removeImg({ url, uid: user.uid }));
+  };
 
   return (
     <ImageDrop
@@ -74,26 +114,28 @@ const ImagePost = ({ user }) => {
       onDragLeave={() => setFileHover(false)}
       fileHover={fileHover}
     >
-      {content.length > 0 ? (
-        content.map((x, i) => {
-          return (
-            <>
+      {draft.content !== null && draft.content.length > 0 ? (
+        <div>
+          {draft.content.map((x) => {
+            return (
               <DisplayImage key={uniqid()}>
                 <img src={x} alt="display selected" />
+                <div className="remove-icon" onClick={() => handleRemove(x)}>
+                  <RxCross2 size={"1.5rem"} />
+                </div>
               </DisplayImage>
-              {i === content.length - 1 && (
-                <label htmlFor="image-drop">
-                  <DisplayImage last>
-                    <IoIosAdd
-                      size={"2.5rem"}
-                      color={theme === "dark" ? "#272729" : "#f6f7f8"}
-                    />
-                  </DisplayImage>
-                </label>
-              )}
-            </>
-          );
-        })
+            );
+          })}
+
+          <label htmlFor="image-drop">
+            <DisplayImage last>
+              <IoIosAdd
+                size={"2.5rem"}
+                color={theme === "dark" ? "#272729" : "#f6f7f8"}
+              />
+            </DisplayImage>
+          </label>
+        </div>
       ) : (
         <>
           <p>
@@ -104,6 +146,9 @@ const ImagePost = ({ user }) => {
           </p>
         </>
       )}
+      <div className={`loading-bar${loading ? " active" : ""}`}>
+        <div />
+      </div>
       <input
         id="image-drop"
         type={"file"}

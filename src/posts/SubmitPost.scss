@@ -46,11 +46,12 @@
     padding: 0.75rem;
     border-radius: 4px;
     height: min-content;
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: center;
-    gap: 0.5rem;
+
+    > div {
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+    }
 
     > p {
       color: var(--action);
@@ -65,6 +66,21 @@
     input#image-drop {
       border: none;
       display: none;
+    }
+
+    div.loading-bar {
+      width: 100%;
+      height: 5px;
+      margin: 5px;
+
+      &.active {
+        > div {
+          animation: load 1.5s cubic-bezier(0.2, 1.04, 0.54, 0.92) forwards;
+          background-color: var(--action);
+          height: 2px;
+          border-radius: 1px;
+        }
+      }
     }
   }
 
@@ -90,5 +106,14 @@
         font-size: 0.8rem;
       }
     }
+  }
+}
+
+@keyframes load {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
   }
 }

@@ -1,4 +1,11 @@
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+  listAll,
+} from "firebase/storage";
 
 const storage = getStorage();
 // const communities = ref(storage, "communities");
@@ -19,4 +26,29 @@ const getImageURL = async (ref) => {
   return url;
 };
 
-export { uploadImage, getImageURL };
+const deleteDraftFiles = async (uid) => {
+  const draft = ref(storage, `users/${uid}/draft`);
+  await listAll(draft).then((res) => {
+    res.items.forEach((x) => deleteObject(x));
+  });
+  // console.log("deleted all files from draft");
+};
+
+const deleteFileFromURL = async (url, uid) => {
+  const draft = ref(storage, `users/${uid}/draft/`);
+  try {
+    let list;
+    await listAll(draft).then((res) => {
+      list = res.items;
+    });
+    list.forEach(async (x) => {
+      const xurl = await getDownloadURL(x);
+      if (xurl === url) deleteObject(x);
+    });
+    return Promise.resolve();
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+export { uploadImage, getImageURL, deleteDraftFiles, deleteFileFromURL };
