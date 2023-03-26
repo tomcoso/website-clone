@@ -1,7 +1,48 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { getCommunity } from "../firebase/firebase.communities";
+import { getPost } from "../firebase/firebase.posts";
+import Panel from "../communities/components/Panel";
+import "./styling/postMain.scss";
+import { PostPanel } from "./components/Post";
+
 const PostMain = () => {
+  const [postData, setPostData] = useState();
+  const [commData, setCommData] = useState();
+
+  const { postid, community } = useParams();
+
+  useEffect(() => {
+    (async () => {
+      const data = await getPost(postid, community);
+      setPostData(data);
+      const comm = await getCommunity(community);
+      setCommData(comm);
+      console.log(data, comm);
+    })();
+  }, [postid, community]);
+
   return (
     <main>
-      <h1>POST</h1>
+      {postData && commData ? (
+        <>
+          <div id="post-main-grid">
+            <div>
+              <PostPanel postData={postData} commData={commData} />
+            </div>
+            <div>
+              <Panel>
+                <p>c/{commData.name}</p>
+                <p>{commData.description}</p>
+              </Panel>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <p>Loading...</p>
+        </>
+      )}
     </main>
   );
 };

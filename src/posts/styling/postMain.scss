@@ -1,0 +1,16 @@
+main {
+  display: flex;
+  justify-content: center;
+  background-color: var(--bg);
+  padding: 5rem 0;
+}
+#post-main-grid {
+  width: clamp(50%, 900px, 95%);
+  display: grid;
+  grid: 1fr / 2fr 1fr;
+  gap: 1.5rem;
+}
+
+div.post-main {
+  position: relative;
+}

@@ -64,9 +64,13 @@ Order of business:
 
 #### Posts
 
-- setup post creation (/submit) OKish
-- add image or post sections, add spoiler tag
+- setup post creation (/submit) OK
+- add image or post sections, add spoiler tag OK
 - post main page
+  - populate page
+  - style minimally
+  - display images and slideshow
+  - skeleton comments section
 - post panel component
 - post admin popup panel
 - post admin options on mod admin page
@@ -78,4 +82,4 @@ Order of business:
 #### Misc
 
 - give nsfw warning on communities u are not member of
-- reorganise firebase apps into separate topic modules
+- reorganise firebase apps into separate topic modules OKish

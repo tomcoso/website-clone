@@ -1,11 +1,12 @@
-import Panel from "../../communities/components/Panel";
+import PostPanel from "./PostPanel";
 
 const Post = ({ postID }) => {
   return (
-    <Panel>
-      <p>POST {postID}</p>
-    </Panel>
+    // <PostPanel>
+    <p>POST {postID}</p>
+    // </PostPanel>
   );
 };
 
 export default Post;
+export { PostPanel };

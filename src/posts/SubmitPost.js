@@ -6,7 +6,7 @@ import Button from "../components/Button";
 import NoCommunity from "../components/NoCommunity";
 
 // CSS
-import "./SubmitPost.scss";
+import "./styling/submitPost.scss";
 import styled from "styled-components";
 
 // REACT
@@ -45,8 +45,8 @@ const NavItem = styled.div`
 const SubmitPost = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const commName = useParams().community;
+
   const [commData, setCommData] = useState();
 
   const user = useSelector((state) => state.user);
@@ -82,10 +82,9 @@ const SubmitPost = () => {
     })();
   }, [user, dispatch]);
 
-  const isValid = () => {
-    if (typeof title !== "string") return;
-    return draft.title.match(/(.+\s){2,}.+[\W\s]*/g);
-  };
+  const isValid = () =>
+    typeof draft.title === "string" &&
+    draft.title.match(/(.+\s){2,}.+[\W\s]*/g);
 
   const handleSubmit = async () => {
     if (!isValid()) return;
@@ -100,7 +99,10 @@ const SubmitPost = () => {
       ).then((res) => (postID = res));
       await addPostToCommunity(commName, postID);
       navigate(`/c/${commName}/post/${postID}`);
-      updateDraft({}, user.uid);
+      updateDraft(
+        { type: "post", content: "", title: "", nsfw: false },
+        user.uid
+      );
       dispatch(clear());
     } catch (error) {
       console.error("Error while trying to create post", error);
@@ -118,7 +120,7 @@ const SubmitPost = () => {
     dispatch(updateTitle(e.target.value));
   };
 
-  const handleNsfwChange = (e) => {
+  const handleNsfwChange = () => {
     dispatch(updateNSFW(!draft.nsfw));
   };
 
