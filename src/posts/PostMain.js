@@ -23,7 +23,7 @@ const PostMain = () => {
   }, [postid, community]);
 
   return (
-    <main>
+    <main id="post-main">
       {postData && commData ? (
         <>
           <div id="post-main-grid">

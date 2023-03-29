@@ -6,6 +6,7 @@ import {
   getDoc,
   doc,
   deleteDoc,
+  arrayRemove,
 } from "firebase/firestore";
 import { auth, db, getUserDoc } from "./firebase.app";
 
@@ -18,6 +19,7 @@ const createPost = async (title, content, community, nsfw, type) => {
     community,
     nsfw,
     upvotes: [auth.currentUser.uid],
+    downvotes: [],
     user: { id: auth.currentUser.uid, username: auth.currentUser.displayName },
     comments: [],
     type,
@@ -53,4 +55,24 @@ const getPost = async (postID) => {
   return postDoc.data();
 };
 
-export { createPost, deletePost, getPost };
+const upvote = async (postID, uid) => {
+  const postRef = doc(db, "posts", postID);
+  updateDoc(postRef, { upvotes: arrayUnion(uid), downvotes: arrayRemove(uid) });
+  return Promise.resolve();
+};
+
+const downvote = async (postID, uid) => {
+  const postRef = doc(db, "posts", postID);
+  updateDoc(postRef, { upvotes: arrayRemove(uid), downvotes: arrayUnion(uid) });
+  return Promise.resolve();
+};
+
+const removeVote = async (postID, uid) => {
+  const postRef = doc(db, "posts", postID);
+  updateDoc(postRef, {
+    upvotes: arrayRemove(uid),
+    downvotes: arrayRemove(uid),
+  });
+};
+
+export { createPost, deletePost, getPost, upvote, downvote, removeVote };
