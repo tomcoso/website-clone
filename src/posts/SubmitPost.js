@@ -77,7 +77,6 @@ const SubmitPost = () => {
     (async () => {
       if (!user.uid) return;
       const draft = await getDraft(user.uid);
-      console.log(draft);
       applyState(draft);
     })();
   }, [user, dispatch]);
@@ -126,7 +125,8 @@ const SubmitPost = () => {
 
   const handleTypeChange = (newval) => {
     if (draft.type === newval) return;
-    if (draft.type === "image") deleteDraftFiles(user.uid);
+    if (draft.type === "image")
+      deleteDraftFiles(draft.content, user.uid, commName);
     dispatch(updateType(newval));
     const newDraft = {
       ...draft,
@@ -170,7 +170,7 @@ const SubmitPost = () => {
                 {draft.type === "post" ? (
                   <TextPost />
                 ) : (
-                  <ImagePost user={user} />
+                  <ImagePost user={user} commName={commName} />
                 )}
               </li>
               <li>
@@ -181,7 +181,7 @@ const SubmitPost = () => {
               <li>
                 <Button action={handleCancel}>Cancel</Button>
                 <Button disabled={!isValid()} action={handleSubmit}>
-                  Post
+                  Submit
                 </Button>
               </li>
             </ul>

@@ -67,9 +67,9 @@ Order of business:
 - setup post creation (/submit) OK
 - add image or post sections, add spoiler tag OK
 - post main page
-  - populate page
+  - populate page OK
   - style minimally
-  - display images and slideshow
+  - display images and slideshow <--
   - skeleton comments section
 - post panel component
 - post admin popup panel

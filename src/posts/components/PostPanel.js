@@ -1,6 +1,7 @@
 import Panel from "../../communities/components/Panel";
 import CommLogo from "./CommLogo";
 import styled from "styled-components";
+import uniqid from "uniqid";
 import { GoComment } from "react-icons/go";
 import { HiOutlineArrowUturnRight, HiOutlineBookmark } from "react-icons/hi2";
 import { RxDotsHorizontal } from "react-icons/rx";
@@ -222,8 +223,9 @@ const PostPanel = ({ postData, commData }) => {
               <p>{postData.content}</p>
             ) : (
               <div>
+                {console.log(postData.content)}
                 {postData.content.map((x) => (
-                  <div>
+                  <div key={uniqid()}>
                     <img src={x} alt="post content" />
                   </div>
                 ))}
@@ -231,7 +233,7 @@ const PostPanel = ({ postData, commData }) => {
             )}
           </Content>
           <MenuBar onpost={!!params.postid}>
-            <li onClick={() => console.log(!!params.postid)}>
+            <li>
               <GoComment size={"1.2rem"} />
               <span>{postData.comments.length} Comments</span>
             </li>

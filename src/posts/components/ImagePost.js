@@ -59,7 +59,7 @@ const ImageDrop = styled.div`
     props.fileHover ? "2px dashed var(--action)" : "1px solid var(--border)"};
 `;
 
-const ImagePost = ({ user }) => {
+const ImagePost = ({ user, commName }) => {
   const [fileHover, setFileHover] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -80,9 +80,9 @@ const ImagePost = ({ user }) => {
     )
       return;
     setLoading(true);
-    [...e.dataTransfer.items].forEach((item) => {
-      if (item.kind !== "file") return;
-      dispatch(addImg({ uid: user.uid, image: item.getAsFile() }));
+    [...e.dataTransfer.files].forEach((file) => {
+      if (!file.type.match(/image/)) return;
+      dispatch(addImg({ uid: user.uid, image: file, commName }));
     });
   };
 
@@ -94,12 +94,13 @@ const ImagePost = ({ user }) => {
       return;
     setLoading(true);
     [...e.target.files].forEach((file) => {
-      dispatch(addImg({ uid: user.uid, image: file }));
+      if (!file.type.match(/image/)) return;
+      dispatch(addImg({ uid: user.uid, image: file, commName }));
     });
   };
 
   const handleRemove = async (url) => {
-    dispatch(removeImg({ url, uid: user.uid }));
+    dispatch(removeImg({ url, uid: user.uid, commName }));
   };
 
   return (

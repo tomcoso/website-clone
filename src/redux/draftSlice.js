@@ -14,11 +14,16 @@ const addImg = createAsyncThunk("draft/imageUpload", async (data, thunkAPI) => {
   const imgID = uniqid();
   try {
     let imgURL;
-    await uploadImage(`users/${data.uid}/draft/${imgID}`, data.image).then(
-      async (snapshot) => (imgURL = await getImageURL(snapshot.ref))
-    );
+    await uploadImage(
+      `communities/${data.commName}/posts/${data.uid}/${imgID}`,
+      data.image
+    ).then(async (snapshot) => (imgURL = await getImageURL(snapshot.ref)));
     addContentToDraft(imgURL);
-    return Promise.resolve({ url: imgURL, uid: data.uid });
+    return Promise.resolve({
+      url: imgURL,
+      uid: data.uid,
+      commName: data.commName,
+    });
   } catch (err) {
     return Promise.reject(err);
   }
@@ -28,7 +33,7 @@ const removeImg = createAsyncThunk(
   "draft/imageRemove",
   async (data, thunkAPI) => {
     try {
-      await deleteFileFromURL(data.url, data.uid);
+      await deleteFileFromURL(data.url, data.uid, data.commName);
       removeContentFromDraft(data.url);
       return Promise.resolve(data.url);
     } catch (err) {

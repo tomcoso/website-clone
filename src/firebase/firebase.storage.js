@@ -26,16 +26,25 @@ const getImageURL = async (ref) => {
   return url;
 };
 
-const deleteDraftFiles = async (uid) => {
-  const draft = ref(storage, `users/${uid}/draft`);
-  await listAll(draft).then((res) => {
-    res.items.forEach((x) => deleteObject(x));
-  });
-  // console.log("deleted all files from draft");
+const deleteDraftFiles = async (urls, uid, commName) => {
+  const draft = ref(storage, `communities/${commName}/posts/${uid}`);
+  try {
+    let list;
+    await listAll(draft).then((res) => {
+      list = res.items;
+    });
+    list.forEach(async (x) => {
+      const xurl = await getDownloadURL(x);
+      if (urls.includes(xurl)) deleteObject(x);
+    });
+    return Promise.resolve();
+  } catch (err) {
+    return Promise.reject(err);
+  }
 };
 
-const deleteFileFromURL = async (url, uid) => {
-  const draft = ref(storage, `users/${uid}/draft/`);
+const deleteFileFromURL = async (url, uid, commName) => {
+  const draft = ref(storage, `communities/${commName}/posts/${uid}`);
   try {
     let list;
     await listAll(draft).then((res) => {

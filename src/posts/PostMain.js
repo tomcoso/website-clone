@@ -33,7 +33,7 @@ const PostMain = () => {
             <div>
               <Panel>
                 <p>c/{commData.name}</p>
-                <p>{commData.description}</p>
+                <p>{commData.description || "No community description"}</p>
               </Panel>
             </div>
           </div>
