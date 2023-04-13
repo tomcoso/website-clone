@@ -6,6 +6,7 @@ import { GoComment } from "react-icons/go";
 import { HiOutlineArrowUturnRight, HiOutlineBookmark } from "react-icons/hi2";
 import { RxDotsHorizontal } from "react-icons/rx";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 import { useLocation, useNavigate, useParams } from "react-router";
 import { downvote, removeVote, upvote } from "../../firebase/firebase.posts";
@@ -44,10 +45,6 @@ const Comm = styled.div`
 
 const Title = styled.h1`
   font-size: 1.2rem;
-`;
-
-const Content = styled.div`
-  font-size: 0.8rem;
 `;
 
 const MenuBar = styled.ul`
@@ -140,12 +137,68 @@ const PanelWrap = styled.div`
   }
 `;
 
+const Content = styled.div`
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+  overflow: hidden;
+  position: relative;
+
+  > span {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-100%);
+    z-index: 1;
+
+    padding: 0.4rem;
+    aspect-ratio: 1/1;
+    border-radius: 100%;
+    background-color: white;
+    cursor: pointer;
+    box-shadow: black 1px 1px 10px -5px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  > span:first-child {
+    left: 0.5rem;
+    display: ${(p) => (p.slide === 0 ? "none" : "flex")};
+  }
+
+  > span:nth-child(2) {
+    right: 0.5rem;
+    display: ${(p) => (p.slide === p.length - 1 ? "none" : "flex")};
+  }
+`;
+
+const ImageContainer = styled.div`
+  display: grid;
+  grid: 1fr / repeat(auto-fit, 600px);
+  width: ${(p) => 600 * p.length + "px"};
+  transform: translateX(${(p) => p.slide * -600 + "px"});
+
+  > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg);
+
+    > img {
+      object-fit: contain;
+      width: 100%;
+    }
+  }
+`;
+
 const PostPanel = ({ postData, commData }) => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
+
+  const [slide, setSlide] = useState(0);
 
   const [voteCount, setVoteCount] = useState(
     postData.upvotes.length - postData.downvotes.length
@@ -218,18 +271,31 @@ const PostPanel = ({ postData, commData }) => {
             </span>
           </Comm>
           <Title>{postData.title}</Title>
-          <Content>
+          <Content slide={slide} length={postData.content.length}>
             {typeof postData.content === "string" ? (
               <p>{postData.content}</p>
             ) : (
-              <div>
-                {console.log(postData.content)}
-                {postData.content.map((x) => (
-                  <div key={uniqid()}>
-                    <img src={x} alt="post content" />
-                  </div>
-                ))}
-              </div>
+              <>
+                <span onClick={() => setSlide((x) => (x > 0 ? x - 1 : x))}>
+                  <AiOutlineLeft size={"1.5rem"} />
+                </span>
+                <span
+                  onClick={() =>
+                    setSlide((x) =>
+                      x < postData.content.length - 1 ? x + 1 : x
+                    )
+                  }
+                >
+                  <AiOutlineRight size={"1.5rem"} />
+                </span>
+                <ImageContainer length={postData.content.length} slide={slide}>
+                  {postData.content.map((x) => (
+                    <div key={uniqid()}>
+                      <img src={x} alt="post content" />
+                    </div>
+                  ))}
+                </ImageContainer>
+              </>
             )}
           </Content>
           <MenuBar onpost={!!params.postid}>

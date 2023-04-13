@@ -9,4 +9,8 @@ main#post-main {
   display: grid;
   grid: 1fr / 2fr 1fr;
   gap: 1.5rem;
+  // overflow: hidden;
+  > div {
+    max-width: 655px;
+  }
 }
