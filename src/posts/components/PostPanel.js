@@ -177,6 +177,7 @@ const ImageContainer = styled.div`
   grid: 1fr / repeat(auto-fit, 600px);
   width: ${(p) => 600 * p.length + "px"};
   transform: translateX(${(p) => p.slide * -600 + "px"});
+  transition: transform 300ms;
 
   > div {
     display: flex;
@@ -270,7 +271,11 @@ const PostPanel = ({ postData, commData }) => {
               Posted by u/{postData.user.username}
             </span>
           </Comm>
-          <Title>{postData.title}</Title>
+          <Title
+            onClick={() => !params.postid && navigate(`post/${postData.id}`)}
+          >
+            {postData.title}
+          </Title>
           <Content slide={slide} length={postData.content.length}>
             {typeof postData.content === "string" ? (
               <p>{postData.content}</p>
@@ -288,7 +293,13 @@ const PostPanel = ({ postData, commData }) => {
                 >
                   <AiOutlineRight size={"1.5rem"} />
                 </span>
-                <ImageContainer length={postData.content.length} slide={slide}>
+                <ImageContainer
+                  length={postData.content.length}
+                  slide={slide}
+                  onClick={() =>
+                    !params.postid && navigate(`post/${postData.id}`)
+                  }
+                >
                   {postData.content.map((x) => (
                     <div key={uniqid()}>
                       <img src={x} alt="post content" />
@@ -299,7 +310,9 @@ const PostPanel = ({ postData, commData }) => {
             )}
           </Content>
           <MenuBar onpost={!!params.postid}>
-            <li>
+            <li
+              onClick={() => !params.postid && navigate(`post/${postData.id}`)}
+            >
               <GoComment size={"1.2rem"} />
               <span>{postData.comments.length} Comments</span>
             </li>

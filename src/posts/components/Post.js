@@ -1,12 +1,31 @@
-import { useNavigate } from "react-router";
+import { useParams } from "react-router";
 import PostPanel from "./PostPanel";
+import { getPost } from "../../firebase/firebase.posts";
+import { getCommunity } from "../../firebase/firebase.communities";
+import { useEffect, useState } from "react";
 
 const Post = ({ postID }) => {
-  const navigate = useNavigate();
+  const { community } = useParams();
+
+  const [postData, setPostData] = useState();
+  const [commData, setCommData] = useState();
+
+  useEffect(() => {
+    (async () => {
+      const data = await getPost(postID, community);
+      setPostData(data);
+      const comm = await getCommunity(community);
+      setCommData(comm);
+      console.log(data, comm);
+    })();
+  }, [postID, community]);
+
   return (
-    // <PostPanel>
-    <p onClick={() => navigate(`post/${postID}`)}>POST {postID}</p>
-    // </PostPanel>
+    <>
+      {postData && commData && (
+        <PostPanel postData={postData} commData={commData}></PostPanel>
+      )}
+    </>
   );
 };
 
