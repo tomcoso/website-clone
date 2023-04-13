@@ -45,6 +45,7 @@ const Comm = styled.div`
 
 const Title = styled.h1`
   font-size: 1.2rem;
+  cursor: pointer;
 `;
 
 const MenuBar = styled.ul`
@@ -123,10 +124,12 @@ const PanelWrap = styled.div`
   padding-left: 2.5rem;
   position: relative;
   background-color: var(--field);
+  border-radius: 5px;
 
   > div {
     background-color: var(--panel);
     padding-top: 0.5rem;
+    border-radius: 5px;
   }
 
   > div:last-child {
@@ -142,6 +145,7 @@ const Content = styled.div`
   margin-right: 0.5rem;
   overflow: hidden;
   position: relative;
+  cursor: pointer;
 
   > span {
     position: absolute;

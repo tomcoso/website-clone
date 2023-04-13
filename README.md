@@ -69,9 +69,9 @@ Order of business:
 - post main page
   - populate page OK
   - style minimally
-  - display images and slideshow <--
-  - skeleton comments section
-- post panel component
+  - display images and slideshow OK
+  - skeleton comments section <--
+- post panel component OK
 - post admin popup panel
 - post admin options on mod admin page
 - setup comment creation

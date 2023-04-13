@@ -18,7 +18,8 @@ const Container = styled.div`
   --action: ${(props) => (props.theme === "dark" ? "#d7dadc" : "#009ad5")};
   --field: ${(props) => (props.theme === "dark" ? "#272729" : "#f6f7f8")};
   --panel: ${(props) => (props.theme === "dark" ? "#1a1a1b" : "#ffffff")};
-  height: 100vh;
+  min-height: 92dvh;
+  overflow-x: hidden;
 `;
 
 function App() {

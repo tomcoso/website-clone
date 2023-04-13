@@ -5,6 +5,7 @@ import { getPost } from "../firebase/firebase.posts";
 import Panel from "../communities/components/Panel";
 import "./styling/postMain.scss";
 import { PostPanel } from "./components/Post";
+import CommentSection from "./components/CommentSection";
 
 const PostMain = () => {
   const [postData, setPostData] = useState();
@@ -29,6 +30,7 @@ const PostMain = () => {
           <div id="post-main-grid">
             <div>
               <PostPanel postData={postData} commData={commData} />
+              <CommentSection postData={postData} />
             </div>
             <div>
               <Panel>
