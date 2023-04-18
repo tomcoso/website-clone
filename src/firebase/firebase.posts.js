@@ -8,7 +8,7 @@ import {
   deleteDoc,
   arrayRemove,
 } from "firebase/firestore";
-import { auth, db, getUserDoc } from "./firebase.app";
+import { auth, db, getUserDoc, getUserRef } from "./firebase.app";
 
 const _postsRef = collection(db, "posts");
 
@@ -69,10 +69,12 @@ const downvote = async (postID, uid) => {
 
 const removeVote = async (postID, uid) => {
   const postRef = doc(db, "posts", postID);
+  const userRef = await getUserRef(uid);
   updateDoc(postRef, {
     upvotes: arrayRemove(uid),
     downvotes: arrayRemove(uid),
   });
+  updateDoc(userRef, { posts: arrayRemove(postID) });
 };
 
 export { createPost, deletePost, getPost, upvote, downvote, removeVote };

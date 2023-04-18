@@ -16,7 +16,6 @@ const Post = ({ postID }) => {
       setPostData(data);
       const comm = await getCommunity(community);
       setCommData(comm);
-      console.log(data, comm);
     })();
   }, [postID, community]);
 

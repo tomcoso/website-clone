@@ -6,6 +6,7 @@ import {
   collection,
   doc,
   getCountFromServer,
+  getDoc,
   getDocs,
   getFirestore,
   query,
@@ -45,6 +46,11 @@ const getUserDoc = async (uid) => {
   let userDoc;
   userQSnapshot.forEach((doc) => (userDoc = doc));
   return userDoc;
+};
+
+const getUserRef = async (uid) => {
+  const doc = await getUserDoc(uid);
+  return doc(db, "users", doc.id);
 };
 
 // USERS ----------------------------------------------------------------------
@@ -120,6 +126,11 @@ const getDraft = async (uid) => {
   return userSnap.data().draft;
 };
 
+const getTenorAPIKey = async () => {
+  const snap = await getDoc(doc(db, "keys", "tenor"));
+  return snap.data().key;
+};
+
 export {
   app,
   db,
@@ -128,8 +139,10 @@ export {
   logout,
   createUser,
   getUserDoc,
+  getUserRef,
   updateDraft,
   getDraft,
   addContentToDraft,
   removeContentFromDraft,
+  getTenorAPIKey,
 };

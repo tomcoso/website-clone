@@ -19,7 +19,6 @@ const PostMain = () => {
       setPostData(data);
       const comm = await getCommunity(community);
       setCommData(comm);
-      console.log(data, comm);
     })();
   }, [postid, community]);
 

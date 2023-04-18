@@ -6,11 +6,12 @@ const StyledButton = styled.button`
     props.toggle ? "var(--action)" : "var(--panel)"};
   border: var(--action) solid 1px;
   border-radius: 50px;
-  padding: 5px 10px;
+  padding: ${(props) => props.padding};
   font-size: 0.8rem;
   font-weight: bold;
   color: ${(props) => (props.toggle ? "var(--panel)" : "var(--action)")};
   height: min-content;
+  cursor: pointer;
 
   &:hover,
   &:focus {
@@ -30,6 +31,7 @@ const StyledButton = styled.button`
   &:disabled {
     border: 1px solid var(--bg);
     color: var(--bg);
+    cursor: default;
   }
 `;
 
@@ -56,11 +58,14 @@ const Button = ({
   children,
   disabled,
   toggle = false,
+  padding = "5px 10px",
 }) => {
   const [loader, setLoader] = useState(false);
 
   return disabled ? (
-    <StyledButton disabled>{children}</StyledButton>
+    <StyledButton padding={padding} disabled>
+      {children}
+    </StyledButton>
   ) : (
     <StyledButton
       type={type}
@@ -70,6 +75,7 @@ const Button = ({
         setLoader(false);
       }}
       toggle={toggle}
+      padding={padding}
     >
       {loader ? <Loading /> : children}
     </StyledButton>

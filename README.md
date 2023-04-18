@@ -83,3 +83,4 @@ Order of business:
 
 - give nsfw warning on communities u are not member of
 - reorganise firebase apps into separate topic modules OKish
+- integrate prefers-color-scheme to autodetect desired theme
