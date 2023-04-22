@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { getComment } from "../../firebase/firebase.comments";
+import CreateComment from "./CreateComment";
 
 const VerticalWrap = styled.div`
   display: flex;
@@ -20,22 +22,36 @@ const Pfp = styled.div`
   }
 `;
 
-const Comment = (data) => {
+const Comment = ({ commentID }) => {
+  const [commentData, setCommentData] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const data = await getComment(commentID);
+      setCommentData(data);
+    })();
+  }, [commentID]);
+
   return (
     <VerticalWrap>
-      <div>
-        <Pfp>
-          <img
-            src={
-              "https://firebasestorage.googleapis.com/v0/b/coralit-media.appspot.com/o/avatar-final.png?alt=media&token=c69f65a1-722f-4696-8826-ad25d8e1f604"
-            }
-            alt={"user " + data.uid + " profile"}
-          />
-        </Pfp>
-      </div>
-      <div>
-        <div>data.content</div>
-      </div>
+      {commentData && (
+        <>
+          <div>
+            <Pfp>
+              <img
+                src={
+                  "https://firebasestorage.googleapis.com/v0/b/coralit-media.appspot.com/o/avatar-final.png?alt=media&token=c69f65a1-722f-4696-8826-ad25d8e1f604"
+                }
+                alt={"user " + commentData.user + " profile"}
+              />
+            </Pfp>
+          </div>
+          <div>
+            <div>{commentData.content}</div>
+          </div>
+          <CreateComment parent={commentID} commentType={"reply"} />
+        </>
+      )}
     </VerticalWrap>
   );
 };

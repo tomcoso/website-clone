@@ -12,6 +12,7 @@ import { RxCrossCircled } from "react-icons/rx";
 import { AiOutlineGif } from "react-icons/ai";
 
 import { getTenorAPIKey } from "../../firebase/firebase.app";
+import { createComment } from "../../firebase/firebase.comments";
 
 const MainWrapper = styled.div`
   width: 100%;
@@ -112,7 +113,7 @@ const ImgContent = styled.div`
   }
 `;
 
-const CreateComment = ({ parent }) => {
+const CreateComment = ({ parent, commentType }) => {
   const dispatch = useDispatch();
   const location = useLocation();
 
@@ -124,7 +125,16 @@ const CreateComment = ({ parent }) => {
   const [display, setDisplay] = useState(false);
   const [tenorKey, setTenorKey] = useState("");
 
-  const handleSubmit = () => {};
+  const handleSubmit = async () => {
+    const commentRef = await createComment(
+      user.uid,
+      parent,
+      content,
+      type,
+      commentType
+    );
+    return commentRef;
+  };
 
   const handleEmojiSelection = (e) => {
     setDisplay(false);
@@ -221,7 +231,9 @@ const CreateComment = ({ parent }) => {
           >
             <AiOutlineGif size={"1.5rem"} />
           </div>
-          {parent && <Button padding="3px 10px">Cancel</Button>}
+          {commentType === "reply" && (
+            <Button padding="3px 10px">Cancel</Button>
+          )}
           <Button
             padding={"3px 10px"}
             disabled={!content}

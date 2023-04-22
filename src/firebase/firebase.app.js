@@ -49,8 +49,8 @@ const getUserDoc = async (uid) => {
 };
 
 const getUserRef = async (uid) => {
-  const doc = await getUserDoc(uid);
-  return doc(db, "users", doc.id);
+  const docSnap = await getUserDoc(uid);
+  return doc(db, "users", docSnap.id);
 };
 
 // USERS ----------------------------------------------------------------------
