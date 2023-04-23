@@ -68,13 +68,13 @@ Order of business:
 - add image or post sections, add spoiler tag OK
 - post main page
   - populate page OK
-  - style minimally
+  - style minimally OK
   - display images and slideshow OK
-  - skeleton comments section <--
+  - skeleton comments section OK
 - post panel component OK
 - post admin popup panel
 - post admin options on mod admin page
-- setup comment creation
+- setup comment creation OK
 - setup comment and post admin features
 
 #### User profile page
@@ -84,3 +84,5 @@ Order of business:
 - give nsfw warning on communities u are not member of
 - reorganise firebase apps into separate topic modules OKish
 - integrate prefers-color-scheme to autodetect desired theme
+- populate dots menus for post and comments (delete options when owner)
+- make comments collapsable and pagionation

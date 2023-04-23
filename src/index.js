@@ -35,6 +35,9 @@ root.render(
                 </Route>
               </Route>
             </Route>
+            <Route path="u">
+              <Route path=":userid" />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

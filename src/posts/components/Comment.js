@@ -1,29 +1,49 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
+import uniqid from "uniqid";
+import { useEffect, useState } from "react";
 import { getComment } from "../../firebase/firebase.comments";
-import CreateComment from "./CreateComment";
+import { formatDistanceToNowStrict } from "date-fns";
+import { useNavigate } from "react-router";
 
-const VerticalWrap = styled.div`
+import CreateComment from "./CreateComment";
+import { BiDownvote, BiUpvote } from "react-icons/bi";
+import { useSelector } from "react-redux";
+import { GoComment } from "react-icons/go";
+import { RxDotsHorizontal } from "react-icons/rx";
+
+const Wrap = styled.div`
   display: flex;
   flex-direction: row;
 `;
 
 const Pfp = styled.div`
-  width: 2rem;
-  height: 2rem;
+  width: 1.4rem;
+  height: 1.4rem;
   border-radius: 100%;
   background-color: var(--field);
+  cursor: pointer;
 
   > img {
     transform: translate(-10%, -15%);
-    width: 2.6rem;
+    width: 1.6rem;
     object-fit: contain;
     object-position: center;
   }
 `;
 
+const truncateDate = (date) => {
+  const index = date.search(/\s/);
+  const newDate = date.slice(0, index) + date.slice(index + 1, index + 2);
+  return newDate;
+};
+
 const Comment = ({ commentID }) => {
+  const user = useSelector((state) => state.user);
+
   const [commentData, setCommentData] = useState(null);
+  const [replySection, setReplySection] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -32,12 +52,16 @@ const Comment = ({ commentID }) => {
     })();
   }, [commentID]);
 
+  const handleUpvote = () => {};
+
+  const handleDownvote = () => {};
+
   return (
-    <VerticalWrap>
+    <Wrap>
       {commentData && (
         <>
-          <div>
-            <Pfp>
+          <div className="comment-parent-line">
+            <Pfp onClick={() => navigate(`/u/${commentData.user}`)}>
               <img
                 src={
                   "https://firebasestorage.googleapis.com/v0/b/coralit-media.appspot.com/o/avatar-final.png?alt=media&token=c69f65a1-722f-4696-8826-ad25d8e1f604"
@@ -45,14 +69,100 @@ const Comment = ({ commentID }) => {
                 alt={"user " + commentData.user + " profile"}
               />
             </Pfp>
+            <div className="comment-line"></div>
           </div>
-          <div>
-            <div>{commentData.content}</div>
+
+          <div className="comment-main-content">
+            <div className="comment-info">
+              <span onClick={() => navigate(`/u/${commentData.user}`)}>
+                u/{commentData.username}
+              </span>
+              <span>
+                {truncateDate(
+                  formatDistanceToNowStrict(commentData.timestamp.toDate())
+                )}
+              </span>
+            </div>
+            <div className="comment-content">
+              {commentData.type === "text" ? (
+                <div>{commentData.content}</div>
+              ) : (
+                <>
+                  <img
+                    src={commentData.content.url}
+                    alt={commentData.content.description}
+                  />
+                  <div>
+                    {commentData.content.description} by{" "}
+                    <a
+                      href={commentData.content.tenorUrl}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      Tenor
+                    </a>
+                  </div>
+                </>
+              )}
+            </div>
+            <div className="comment-menu">
+              <div className="upvotes">
+                <span
+                  className={
+                    commentData.upvotes.includes(user.uid) ? "selected" : ""
+                  }
+                >
+                  <BiUpvote size={"1.2rem"} onClick={handleUpvote} />
+                </span>
+                <p>{commentData.upvotes.length}</p>
+                <span
+                  className={
+                    commentData.downvotes.includes(user.uid) ? "selected" : ""
+                  }
+                >
+                  <BiDownvote size={"1.2rem"} onClick={handleDownvote} />
+                </span>
+              </div>
+
+              <div
+                className="reply-button"
+                onClick={() => setReplySection((x) => !x)}
+              >
+                <GoComment size={"1.2rem"} />
+                <span>Reply</span>
+              </div>
+
+              <div className="menu-button">
+                <RxDotsHorizontal size={"1.2rem"} />
+              </div>
+            </div>
+
+            {(replySection || commentData.replies.length > 0) && (
+              <div className="comment-reply">
+                {replySection && (
+                  <div className={"create-reply"}>
+                    <div className="comment-parent-line">
+                      <div className="comment-line"></div>
+                    </div>
+                    <CreateComment
+                      parent={commentID}
+                      commentType={"reply"}
+                      cancel={() => setReplySection(false)}
+                    />
+                  </div>
+                )}
+
+                {commentData.replies.map((commentID) => (
+                  <Comment key={uniqid()} commentID={commentID} />
+                ))}
+              </div>
+            )}
           </div>
-          <CreateComment parent={commentID} commentType={"reply"} />
+
+          {/* <CreateComment parent={commentID} commentType={"reply"} /> */}
         </>
       )}
-    </VerticalWrap>
+    </Wrap>
   );
 };
 

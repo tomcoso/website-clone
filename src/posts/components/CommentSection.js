@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import "../styling/commentSection.scss";
+import uniqid from "uniqid";
 import Panel from "../../communities/components/Panel";
 import CreateComment from "./CreateComment";
 import Comment from "./Comment";
@@ -22,11 +24,12 @@ const CommentSection = ({ postData, postID }) => {
       <Panel>
         <div>
           <CreateComment parent={postID} commentType={"comment"} />
+          <div className="separator"></div>
         </div>
-        <div>
+        <div className="comments-wrap">
           {postData.comments &&
             postData.comments.map((commentID) => (
-              <Comment commentID={commentID} />
+              <Comment commentID={commentID} key={uniqid()} />
             ))}
         </div>
       </Panel>

@@ -68,16 +68,22 @@ const CommentsBar = styled.div`
 
   > div {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 1.5rem;
-    border-radius: 100%;
-    aspect-ratio: 1/1;
-    cursor: pointer;
-  }
+    flex-direction: row;
+    gap: 0.5rem;
 
-  > div:first-child:is(:hover, :focus) {
-    background-color: var(--bg);
+    > div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 1.5rem;
+      border-radius: 100%;
+      aspect-ratio: 1/1;
+      cursor: pointer;
+    }
+
+    > div:first-child:is(:hover, :focus) {
+      background-color: var(--bg);
+    }
   }
 `;
 
@@ -113,7 +119,7 @@ const ImgContent = styled.div`
   }
 `;
 
-const CreateComment = ({ parent, commentType }) => {
+const CreateComment = ({ parent, commentType, cancel }) => {
   const dispatch = useDispatch();
   const location = useLocation();
 
@@ -128,11 +134,16 @@ const CreateComment = ({ parent, commentType }) => {
   const handleSubmit = async () => {
     const commentRef = await createComment(
       user.uid,
+      user.username,
       parent,
       content,
       type,
-      commentType
+      commentType,
+      user.uid
     );
+    cancel && cancel();
+    setContent("");
+    setType("text");
     return commentRef;
   };
 
@@ -143,6 +154,7 @@ const CreateComment = ({ parent, commentType }) => {
   };
 
   const handleGifSelection = (gif) => {
+    console.log(gif);
     setDisplay(false);
     type !== "img" && setType("img");
     setContent(gif);
@@ -156,25 +168,27 @@ const CreateComment = ({ parent, commentType }) => {
   }, []);
 
   return (
-    <MainWrapper>
-      <p>
-        {user.isLoggedIn ? (
-          <>
-            {"Comment as "}
-            <Link>{user.username}</Link>
-          </>
-        ) : (
-          <>
-            <Link
-              to={"/login"}
-              onClick={() => dispatch(setPath({ path: location.pathname }))}
-            >
-              Log in
-            </Link>
-            to comment
-          </>
-        )}
-      </p>
+    <MainWrapper id="create-comment">
+      {commentType === "comment" && (
+        <p>
+          {user.isLoggedIn ? (
+            <>
+              {"Comment as "}
+              <Link>{user.username}</Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to={"/login"}
+                onClick={() => dispatch(setPath({ path: location.pathname }))}
+              >
+                Log in
+              </Link>
+              to comment
+            </>
+          )}
+        </p>
+      )}
       <ContentBox>
         {type === "text" ? (
           <textarea
@@ -219,28 +233,36 @@ const CreateComment = ({ parent, commentType }) => {
               />
             </div>
           )}
-          <div
-            onClick={() => setDisplay((x) => (x === "emoji" ? false : "emoji"))}
-          >
-            <CiFaceSmile size={"1.5rem"} />
+          <div>
+            <div
+              onClick={() =>
+                setDisplay((x) => (x === "emoji" ? false : "emoji"))
+              }
+            >
+              <CiFaceSmile size={"1.5rem"} />
+            </div>
+            <div
+              onClick={() => {
+                tenorKey && setDisplay((x) => (x === "gif" ? false : "gif"));
+              }}
+            >
+              <AiOutlineGif size={"1.5rem"} />
+            </div>
           </div>
-          <div
-            onClick={() => {
-              tenorKey && setDisplay((x) => (x === "gif" ? false : "gif"));
-            }}
-          >
-            <AiOutlineGif size={"1.5rem"} />
+          <div>
+            {commentType === "reply" && (
+              <Button padding="3px 10px" action={cancel}>
+                Cancel
+              </Button>
+            )}
+            <Button
+              padding={"3px 10px"}
+              disabled={!content}
+              action={handleSubmit}
+            >
+              Comment
+            </Button>
           </div>
-          {commentType === "reply" && (
-            <Button padding="3px 10px">Cancel</Button>
-          )}
-          <Button
-            padding={"3px 10px"}
-            disabled={!content}
-            action={handleSubmit}
-          >
-            Comment
-          </Button>
         </CommentsBar>
       </ContentBox>
     </MainWrapper>

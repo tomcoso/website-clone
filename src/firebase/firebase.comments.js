@@ -10,14 +10,25 @@ import { db, getUserRef } from "./firebase.app";
 
 const commentsRef = collection(db, "comments");
 
-const createComment = async (uid, parent, content, type, commentType) => {
+const createComment = async (
+  uid,
+  username,
+  parent,
+  content,
+  type,
+  commentType,
+  upvotes
+) => {
   const comment = {
     user: uid,
+    username: username,
     content: content,
     type: type,
     timestamp: new Date(),
     parent: parent,
     replies: [],
+    upvotes: [upvotes],
+    downvotes: [],
   };
 
   try {
