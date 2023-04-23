@@ -1,5 +1,6 @@
 import {
   addDoc,
+  arrayRemove,
   arrayUnion,
   collection,
   doc,
@@ -60,4 +61,18 @@ const getComment = async (commentID) => {
   return docSnap.data();
 };
 
-export { createComment, getComment };
+const upvoteComment = async (commentID, uid) => {
+  await updateDoc(doc(db, "comments", commentID), {
+    upvotes: arrayUnion(uid),
+    downvotes: arrayRemove(uid),
+  });
+};
+
+const downvoteComment = async (commentID, uid) => {
+  await updateDoc(doc(db, "comments", commentID), {
+    downvotes: arrayUnion(uid),
+    upvotes: arrayRemove(uid),
+  });
+};
+
+export { createComment, getComment, downvoteComment, upvoteComment };

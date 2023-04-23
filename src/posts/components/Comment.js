@@ -1,7 +1,11 @@
 import styled from "styled-components";
 import uniqid from "uniqid";
 import { useEffect, useState } from "react";
-import { getComment } from "../../firebase/firebase.comments";
+import {
+  downvoteComment,
+  getComment,
+  upvoteComment,
+} from "../../firebase/firebase.comments";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useNavigate } from "react-router";
 
@@ -42,6 +46,8 @@ const Comment = ({ commentID }) => {
 
   const [commentData, setCommentData] = useState(null);
   const [replySection, setReplySection] = useState(false);
+  const [upvotes, setUpvotes] = useState(0);
+  const [lastVote, setLastVote] = useState(null);
 
   const navigate = useNavigate();
 
@@ -49,12 +55,38 @@ const Comment = ({ commentID }) => {
     (async () => {
       const data = await getComment(commentID);
       setCommentData(data);
+      setUpvotes(data.upvotes.length - data.downvotes.length);
+      setLastVote(
+        data.upvotes.includes(user.uid)
+          ? "up"
+          : data.downvotes.includes(user.uid)
+          ? "down"
+          : "none"
+      );
     })();
-  }, [commentID]);
+  }, [commentID, user]);
 
-  const handleUpvote = () => {};
+  const handleUpvote = () => {
+    if (lastVote === "up") {
+      setLastVote("none");
+      setUpvotes((x) => x - 1);
+      return;
+    }
+    upvoteComment(commentID, user.uid);
+    lastVote === "down" ? setUpvotes((x) => x + 2) : setUpvotes((x) => x + 1);
+    setLastVote("up");
+  };
 
-  const handleDownvote = () => {};
+  const handleDownvote = () => {
+    if (lastVote === "down") {
+      setLastVote("none");
+      setUpvotes((x) => x + 1);
+      return;
+    }
+    downvoteComment(commentID, user.uid);
+    lastVote === "up" ? setUpvotes((x) => x - 2) : setUpvotes((x) => x - 1);
+    setLastVote("down");
+  };
 
   return (
     <Wrap>
@@ -107,19 +139,11 @@ const Comment = ({ commentID }) => {
             </div>
             <div className="comment-menu">
               <div className="upvotes">
-                <span
-                  className={
-                    commentData.upvotes.includes(user.uid) ? "selected" : ""
-                  }
-                >
+                <span className={lastVote === "up" ? "selected" : ""}>
                   <BiUpvote size={"1.2rem"} onClick={handleUpvote} />
                 </span>
-                <p>{commentData.upvotes.length}</p>
-                <span
-                  className={
-                    commentData.downvotes.includes(user.uid) ? "selected" : ""
-                  }
-                >
+                <p>{upvotes}</p>
+                <span className={lastVote === "down" ? "selected" : ""}>
                   <BiDownvote size={"1.2rem"} onClick={handleDownvote} />
                 </span>
               </div>
