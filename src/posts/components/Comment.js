@@ -161,7 +161,7 @@ const Comment = ({ commentID }) => {
               </div>
             </div>
 
-            {(replySection || commentData.replies.length > 0) && (
+            {/* {(replySection || commentData.replies.length > 0) && (
               <div className="comment-reply">
                 {replySection && (
                   <div className={"create-reply"}>
@@ -180,7 +180,7 @@ const Comment = ({ commentID }) => {
                   <Comment key={uniqid()} commentID={commentID} />
                 ))}
               </div>
-            )}
+            )} */}
           </div>
 
           {/* <CreateComment parent={commentID} commentType={"reply"} /> */}

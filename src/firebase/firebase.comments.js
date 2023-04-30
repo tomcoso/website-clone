@@ -75,4 +75,44 @@ const downvoteComment = async (commentID, uid) => {
   });
 };
 
-export { createComment, getComment, downvoteComment, upvoteComment };
+// FETCH COMMENTS and organise in queue with indentation data
+const getRecursiveComments = async (commentID, indent) => {
+  const list = [];
+  const docSnap = await getDoc(doc(db, "comments", commentID));
+  const data = docSnap.data();
+  list.push({ id: docSnap.id, indent });
+
+  if (data.replies.length === 0) return list;
+
+  for (let comment of data.replies) {
+    const sublist = await getRecursiveComments(comment, indent + 1);
+    list.push(...sublist);
+  }
+  // console.log("fetched list", list);
+  return list;
+};
+
+const fetchPostComments = async (postID) => {
+  const queue = [];
+  const postSnap = await getDoc(doc(db, "posts", postID));
+  const postData = postSnap.data();
+
+  if (postData.comments.length === 0) return [];
+
+  console.log("recursion starts");
+  for (let comment of postData.comments) {
+    const list = await getRecursiveComments(comment, 0);
+    queue.push(...list);
+  }
+  console.log("recursion ends", queue);
+
+  return queue;
+};
+
+export {
+  createComment,
+  getComment,
+  downvoteComment,
+  upvoteComment,
+  fetchPostComments,
+};

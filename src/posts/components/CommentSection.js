@@ -4,6 +4,8 @@ import uniqid from "uniqid";
 import Panel from "../../communities/components/Panel";
 import CreateComment from "./CreateComment";
 import Comment from "./Comment";
+import { fetchPostComments } from "../../firebase/firebase.comments";
+import { useEffect, useState } from "react";
 
 const SectionWrap = styled.div`
   padding-top: 0.5rem;
@@ -19,6 +21,16 @@ const SectionWrap = styled.div`
 `;
 
 const CommentSection = ({ postData, postID }) => {
+  const [comments, setComments] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const data = await fetchPostComments(postID);
+      console.log(data);
+      setComments(data);
+    })();
+  }, [postID]);
+
   return (
     <SectionWrap>
       <Panel>
@@ -27,9 +39,13 @@ const CommentSection = ({ postData, postID }) => {
           <div className="separator"></div>
         </div>
         <div className="comments-wrap">
-          {postData.comments &&
-            postData.comments.map((commentID) => (
-              <Comment commentID={commentID} key={uniqid()} />
+          {comments !== null &&
+            comments.map((each) => (
+              <Comment
+                commentID={each.id}
+                indentation={each.indent}
+                key={uniqid()}
+              />
             ))}
         </div>
       </Panel>

@@ -86,3 +86,4 @@ Order of business:
 - integrate prefers-color-scheme to autodetect desired theme
 - populate dots menus for post and comments (delete options when owner)
 - make comments collapsable and pagionation
+- make upvote arrows orange
