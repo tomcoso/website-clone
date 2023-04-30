@@ -10,14 +10,9 @@
 
 .indent-parent-line {
   display: flex;
-  gap: calc(1.4rem - 2px);
+  gap: calc(1.4rem - 4px);
   padding: 0 calc(0.7rem - 2px);
-
-  .comment-line {
-    height: 100%;
-    width: 2px;
-    background-color: var(--bg);
-  }
+  justify-content: space-evenly;
 }
 
 .comment-parent-line {
@@ -29,10 +24,8 @@
   min-width: 1.6rem;
   margin-top: 0.5rem;
 
-  .comment-line {
-    height: 100%;
-    width: 2px;
-    background-color: var(--bg);
+  > .comment-line {
+    margin-top: 0.3rem;
   }
 }
 

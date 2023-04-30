@@ -119,7 +119,7 @@ const ImgContent = styled.div`
   }
 `;
 
-const CreateComment = ({ parent, commentType, cancel }) => {
+const CreateComment = ({ parent, commentType, cancel, onSubmit }) => {
   const dispatch = useDispatch();
   const location = useLocation();
 
@@ -144,6 +144,7 @@ const CreateComment = ({ parent, commentType, cancel }) => {
     cancel && cancel();
     setContent("");
     setType("text");
+    onSubmit(parent, commentRef.id);
     return commentRef;
   };
 

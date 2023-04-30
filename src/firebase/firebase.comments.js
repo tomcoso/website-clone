@@ -88,7 +88,6 @@ const getRecursiveComments = async (commentID, indent) => {
     const sublist = await getRecursiveComments(comment, indent + 1);
     list.push(...sublist);
   }
-  // console.log("fetched list", list);
   return list;
 };
 
@@ -99,12 +98,10 @@ const fetchPostComments = async (postID) => {
 
   if (postData.comments.length === 0) return [];
 
-  console.log("recursion starts");
   for (let comment of postData.comments) {
     const list = await getRecursiveComments(comment, 0);
     queue.push(...list);
   }
-  console.log("recursion ends", queue);
 
   return queue;
 };

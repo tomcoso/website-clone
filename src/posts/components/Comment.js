@@ -35,14 +35,21 @@ const Pfp = styled.div`
   }
 `;
 
+const CommentLine = styled.div`
+  height: 100%;
+  width: 2px;
+  background-color: var(${(p) => (p.theme === "light" ? "--bg" : "--field")});
+`;
+
 const truncateDate = (date) => {
   const index = date.search(/\s/);
   const newDate = date.slice(0, index) + date.slice(index + 1, index + 2);
   return newDate;
 };
 
-const Comment = ({ commentID, indentation }) => {
+const Comment = ({ commentID, indentation, onReply }) => {
   const user = useSelector((state) => state.user);
+  const theme = useSelector((state) => state.theme);
 
   const [commentData, setCommentData] = useState(null);
   const [replySection, setReplySection] = useState(false);
@@ -95,9 +102,23 @@ const Comment = ({ commentID, indentation }) => {
           {indentation > 0 && (
             <div
               className="indent-parent-line"
-              style={{ width: (1.4 * indentation).toFixed(1) + "rem" }}
+              style={{
+                width: `calc(${(1.4 * indentation).toFixed(1)}rem - ${
+                  2 * indentation
+                }px)`,
+              }}
             >
-              {Array(indentation).fill(<div className="comment-line"></div>)}
+              {Array(indentation)
+                .fill("")
+                .map((x) => (
+                  <CommentLine
+                    theme={theme}
+                    className="comment-line"
+                    key={uniqid()}
+                  >
+                    {x}
+                  </CommentLine>
+                ))}
             </div>
           )}
 
@@ -110,7 +131,7 @@ const Comment = ({ commentID, indentation }) => {
                 alt={"user " + commentData.user + " profile"}
               />
             </Pfp>
-            <div className="comment-line"></div>
+            <CommentLine theme={theme} className="comment-line" />
           </div>
 
           <div className="comment-main-content">
@@ -175,12 +196,13 @@ const Comment = ({ commentID, indentation }) => {
                 {replySection && (
                   <div className="create-reply">
                     <div className="comment-parent-line">
-                      <div className="comment-line"></div>
+                      <CommentLine theme={theme} className="comment-line" />
                     </div>
                     <CreateComment
                       parent={commentID}
                       commentType={"reply"}
                       cancel={() => setReplySection(false)}
+                      onSubmit={onReply}
                     />
                   </div>
                 )}

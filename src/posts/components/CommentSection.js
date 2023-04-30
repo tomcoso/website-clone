@@ -31,6 +31,19 @@ const CommentSection = ({ postData, postID }) => {
     })();
   }, [postID]);
 
+  const handleNewCommentInsertion = (parentID, commentID) => {
+    const parentIndex = comments.findIndex((x) => x.id === parentID);
+    const parentIndent = comments[parentIndex].indent;
+    const list = comments.slice();
+    console.log(comments);
+    list.splice(parentIndex + 1, 0, {
+      id: commentID,
+      indent: parentIndent + 1,
+    });
+    console.log(list);
+    setComments(list);
+  };
+
   return (
     <SectionWrap>
       <Panel>
@@ -45,6 +58,7 @@ const CommentSection = ({ postData, postID }) => {
                 commentID={each.id}
                 indentation={each.indent}
                 key={uniqid()}
+                onReply={handleNewCommentInsertion}
               />
             ))}
         </div>
