@@ -41,7 +41,7 @@ const truncateDate = (date) => {
   return newDate;
 };
 
-const Comment = ({ commentID }) => {
+const Comment = ({ commentID, indentation }) => {
   const user = useSelector((state) => state.user);
 
   const [commentData, setCommentData] = useState(null);
@@ -92,6 +92,15 @@ const Comment = ({ commentID }) => {
     <Wrap>
       {commentData && (
         <>
+          {indentation > 0 && (
+            <div
+              className="indent-parent-line"
+              style={{ width: (1.4 * indentation).toFixed(1) + "rem" }}
+            >
+              {Array(indentation).fill(<div className="comment-line"></div>)}
+            </div>
+          )}
+
           <div className="comment-parent-line">
             <Pfp onClick={() => navigate(`/u/${commentData.user}`)}>
               <img
@@ -161,10 +170,10 @@ const Comment = ({ commentID }) => {
               </div>
             </div>
 
-            {/* {(replySection || commentData.replies.length > 0) && (
+            {replySection && (
               <div className="comment-reply">
                 {replySection && (
-                  <div className={"create-reply"}>
+                  <div className="create-reply">
                     <div className="comment-parent-line">
                       <div className="comment-line"></div>
                     </div>
@@ -180,10 +189,8 @@ const Comment = ({ commentID }) => {
                   <Comment key={uniqid()} commentID={commentID} />
                 ))}
               </div>
-            )} */}
+            )}
           </div>
-
-          {/* <CreateComment parent={commentID} commentType={"reply"} /> */}
         </>
       )}
     </Wrap>
