@@ -121,7 +121,9 @@ const deleteComment = async (commentID, postID) => {
 
   // delete replies recursively
   if (commentDoc.data().replies.length > 0) {
-    commentDoc.data().replies.forEach((x) => deleteComment(x, postID));
+    for (const each of commentDoc.data().replies) {
+      await deleteComment(each, postID);
+    }
   }
   // comment itself
   await deleteDoc(commentRef);

@@ -29,7 +29,7 @@ const PostMain = () => {
           <div id="post-main-grid">
             <div>
               <PostPanel postData={postData} commData={commData} />
-              <CommentSection postData={postData} postID={postid} />
+              <CommentSection commData={commData} postID={postid} />
             </div>
             <div>
               <Panel>

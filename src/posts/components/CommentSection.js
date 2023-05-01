@@ -4,7 +4,10 @@ import uniqid from "uniqid";
 import Panel from "../../communities/components/Panel";
 import CreateComment from "./CreateComment";
 import Comment from "./Comment";
-import { fetchPostComments } from "../../firebase/firebase.comments";
+import {
+  deleteComment,
+  fetchPostComments,
+} from "../../firebase/firebase.comments";
 import { useEffect, useState } from "react";
 
 const SectionWrap = styled.div`
@@ -20,7 +23,7 @@ const SectionWrap = styled.div`
   }
 `;
 
-const CommentSection = ({ postData, postID }) => {
+const CommentSection = ({ commData, postID }) => {
   const [comments, setComments] = useState(null);
 
   useEffect(() => {
@@ -31,7 +34,8 @@ const CommentSection = ({ postData, postID }) => {
   }, [postID]);
 
   const handleNewCommentInsertion = (parentID, commentID) => {
-    const parentIndex = comments.findIndex((x) => x.id === parentID);
+    const parentIndex =
+      parentID === postID ? -1 : comments.findIndex((x) => x.id === parentID);
     const parentIndent =
       parentID === postID ? -1 : comments[parentIndex].indent;
     const list = comments.slice();
@@ -39,6 +43,14 @@ const CommentSection = ({ postData, postID }) => {
       id: commentID,
       indent: parentIndent + 1,
     });
+    setComments(list);
+  };
+
+  const handleCommentDeletion = async (commentID) => {
+    await deleteComment(commentID, postID);
+    const commentIndex = comments.findIndex((x) => x.id === commentID);
+    const list = comments.slice();
+    list.splice(commentIndex, 1);
     setComments(list);
   };
 
@@ -61,6 +73,8 @@ const CommentSection = ({ postData, postID }) => {
                 indentation={each.indent}
                 key={uniqid()}
                 onReply={handleNewCommentInsertion}
+                mods={commData.moderators}
+                onDelete={handleCommentDeletion}
               />
             ))}
         </div>

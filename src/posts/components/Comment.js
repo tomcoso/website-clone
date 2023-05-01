@@ -14,6 +14,7 @@ import { BiDownvote, BiUpvote } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { GoComment } from "react-icons/go";
 import { RxDotsHorizontal } from "react-icons/rx";
+import OptionsMenu from "./OptionsMenu";
 
 const Wrap = styled.div`
   display: flex;
@@ -47,7 +48,7 @@ const truncateDate = (date) => {
   return newDate;
 };
 
-const Comment = ({ commentID, indentation, onReply }) => {
+const Comment = ({ commentID, indentation, onReply, mods, onDelete }) => {
   const user = useSelector((state) => state.user);
   const theme = useSelector((state) => state.theme);
 
@@ -55,6 +56,7 @@ const Comment = ({ commentID, indentation, onReply }) => {
   const [replySection, setReplySection] = useState(false);
   const [upvotes, setUpvotes] = useState(0);
   const [lastVote, setLastVote] = useState(null);
+  const [menuDisplay, setMenuDisplay] = useState(false);
 
   const navigate = useNavigate();
 
@@ -62,6 +64,7 @@ const Comment = ({ commentID, indentation, onReply }) => {
     (async () => {
       const data = await getComment(commentID);
       setCommentData(data);
+      if (!data) return;
       setUpvotes(data.upvotes.length - data.downvotes.length);
       setLastVote(
         data.upvotes.includes(user.uid)
@@ -186,8 +189,20 @@ const Comment = ({ commentID, indentation, onReply }) => {
                 <span>Reply</span>
               </div>
 
-              <div className="menu-button">
+              <div
+                className="menu-button"
+                onClick={() => setMenuDisplay((x) => !x)}
+                style={{ position: "relative" }}
+              >
                 <RxDotsHorizontal size={"1.2rem"} />
+                {menuDisplay && (
+                  <OptionsMenu
+                    editAction={() => {}}
+                    deleteAction={() => onDelete(commentID)}
+                    author={commentData.user}
+                    mods={mods}
+                  />
+                )}
               </div>
             </div>
 

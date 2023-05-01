@@ -72,13 +72,13 @@ Order of business:
   - display images and slideshow OK
   - skeleton comments section OK
 - post panel component OK
-- post admin popup panel
+- post admin popup panel OK
 - post admin options on mod admin page
 - setup comment creation OK
-- setup comment and post admin features
-  - edit
-  - delete
-  - report (no fn)
+- setup comment and post admin features OK (TODO ADMIN)
+  - edit (no fn for now) OK
+  - delete OK
+  - report (no fn) OK
 
 #### User profile page
 
