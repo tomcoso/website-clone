@@ -26,21 +26,19 @@ const CommentSection = ({ postData, postID }) => {
   useEffect(() => {
     (async () => {
       const data = await fetchPostComments(postID);
-      console.log(data);
       setComments(data);
     })();
   }, [postID]);
 
   const handleNewCommentInsertion = (parentID, commentID) => {
     const parentIndex = comments.findIndex((x) => x.id === parentID);
-    const parentIndent = comments[parentIndex].indent;
+    const parentIndent =
+      parentID === postID ? -1 : comments[parentIndex].indent;
     const list = comments.slice();
-    console.log(comments);
     list.splice(parentIndex + 1, 0, {
       id: commentID,
       indent: parentIndent + 1,
     });
-    console.log(list);
     setComments(list);
   };
 
@@ -48,7 +46,11 @@ const CommentSection = ({ postData, postID }) => {
     <SectionWrap>
       <Panel>
         <div>
-          <CreateComment parent={postID} commentType={"comment"} />
+          <CreateComment
+            parent={postID}
+            commentType={"comment"}
+            onSubmit={handleNewCommentInsertion}
+          />
           <div className="separator"></div>
         </div>
         <div className="comments-wrap">

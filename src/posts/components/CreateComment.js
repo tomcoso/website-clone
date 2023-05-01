@@ -144,7 +144,7 @@ const CreateComment = ({ parent, commentType, cancel, onSubmit }) => {
     cancel && cancel();
     setContent("");
     setType("text");
-    onSubmit(parent, commentRef.id);
+    onSubmit && onSubmit(parent, commentRef.id);
     return commentRef;
   };
 
