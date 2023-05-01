@@ -73,14 +73,21 @@ Order of business:
   - skeleton comments section OK
 - post panel component OK
 - post admin popup panel OK
-- post admin options on mod admin page
 - setup comment creation OK
-- setup comment and post admin features OK (TODO ADMIN)
+- setup comment option features OK
   - edit (no fn for now) OK
   - delete OK
   - report (no fn) OK
 
 #### User profile page
+
+- setup own user firebase file
+- setup routes
+- setup tabs
+- populate settings tab and make settings updating fn
+- populate posts tab
+- populate comments tab
+- add profile dropdown menu with theme and other settings and tabs links
 
 #### Misc
 
