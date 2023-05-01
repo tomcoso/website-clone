@@ -40,8 +40,11 @@ const createCommunity = async (name, nsfw) => {
   const communitySnapshot = await getCountFromServer(
     query(_communitiesRef, where("name", "==", name))
   );
+
+  // checks if comm name is available
   if (communitySnapshot.data().count > 0)
     return Promise.reject(Error("community-already-exists"));
+
   const newCommunity = {
     name,
     posts: [],
@@ -57,9 +60,14 @@ const createCommunity = async (name, nsfw) => {
       desc: `This is ${name}. The greatest community on Coralit.`,
     },
   };
-  return await addDoc(_communitiesRef, newCommunity).catch((error) =>
-    Promise.reject(error)
+  const newCommRef = await addDoc(_communitiesRef, newCommunity).catch(
+    (error) => Promise.reject(error)
   );
+
+  // add id to document
+  await updateDoc(newCommRef, { id: newCommRef.id });
+
+  return newCommRef;
 };
 
 const updateSettings = async (name, settings) => {

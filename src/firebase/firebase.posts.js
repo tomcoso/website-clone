@@ -40,13 +40,29 @@ const deletePost = async (postID, commData) => {
   const postDocRef = doc(db, "posts", postID);
   const postDoc = await getDoc(postDocRef);
   const userDoc = await getUserDoc(auth.currentUser.uid);
+
+  // checks for author or mod
   if (
-    userDoc.data().posts.find((x) => x.user !== postDoc.data().user) ||
-    commData.moderators.includes(userDoc.data().uid)
+    !userDoc.data().posts.includes(postDoc.data().id) ||
+    !commData.moderators.includes(userDoc.data().uid)
   )
-    // untested
     return Promise.reject(Error("not authorised"));
-  return await deleteDoc(postDocRef);
+
+  // post itself
+  const deletedStatus = await deleteDoc(postDocRef);
+
+  // post id on user
+  const userRef = await getUserRef(postDoc.data().user.id);
+  updateDoc(doc(db, "users", userRef.id), {
+    posts: arrayRemove(postDoc.data().id),
+  });
+
+  // post id on community
+  updateDoc(doc(db, "communities", commData.id), {
+    posts: arrayRemove(postID),
+  });
+
+  return Promise.resolve(deletedStatus);
 };
 
 const getPost = async (postID) => {

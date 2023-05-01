@@ -76,6 +76,9 @@ Order of business:
 - post admin options on mod admin page
 - setup comment creation OK
 - setup comment and post admin features
+  - edit
+  - delete
+  - report (no fn)
 
 #### User profile page
 
@@ -87,3 +90,4 @@ Order of business:
 - populate dots menus for post and comments (delete options when owner)
 - make comments collapsable and pagionation
 - make upvote arrows orange
+- comment and post SORT fn

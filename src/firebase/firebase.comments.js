@@ -3,6 +3,7 @@ import {
   arrayRemove,
   arrayUnion,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   updateDoc,
@@ -106,10 +107,45 @@ const fetchPostComments = async (postID) => {
   return queue;
 };
 
+// DELETE COMMENTS recursively (for replies)
+const deleteComment = async (commentID, postID) => {
+  const commentRef = doc(db, "comments", commentID);
+  const commentDoc = await getDoc(commentRef);
+  const userRef = await getUserRef(commentDoc.data().user);
+
+  // comment id on post (if main comment)
+  const postRef = doc(db, "posts", postID);
+  const postDoc = await getDoc(postRef);
+  if (postDoc.data().comments.includes(commentID))
+    await updateDoc(postRef, { comments: arrayRemove(commentID) });
+
+  // delete replies recursively
+  if (commentDoc.data().replies.length > 0) {
+    commentDoc.data().replies.forEach((x) => deleteComment(x, postID));
+  }
+  // comment itself
+  await deleteDoc(commentRef);
+
+  // comment id on user
+  await updateDoc(userRef, { comments: arrayRemove(commentID) });
+};
+
+const deleteAllComments = async (postID) => {
+  const postRef = doc(db, "posts", postID);
+  const postDoc = await getDoc(postRef);
+  if (postDoc.data().comments.length === 0) return;
+
+  for (let each of postDoc.data().comments) {
+    await deleteComment(each, postID);
+  }
+};
+
 export {
   createComment,
   getComment,
   downvoteComment,
   upvoteComment,
   fetchPostComments,
+  deleteAllComments,
+  deleteComment,
 };

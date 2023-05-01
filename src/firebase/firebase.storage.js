@@ -50,10 +50,10 @@ const deleteFileFromURL = async (url, uid, commName) => {
     await listAll(draft).then((res) => {
       list = res.items;
     });
-    list.forEach(async (x) => {
+    for (let x of list) {
       const xurl = await getDownloadURL(x);
       if (xurl === url) deleteObject(x);
-    });
+    }
     return Promise.resolve();
   } catch (err) {
     return Promise.reject(err);

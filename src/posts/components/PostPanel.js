@@ -8,11 +8,19 @@ import { RxDotsHorizontal } from "react-icons/rx";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
-import { useLocation, useNavigate, useParams } from "react-router";
-import { downvote, removeVote, upvote } from "../../firebase/firebase.posts";
+import { redirect, useLocation, useNavigate, useParams } from "react-router";
+import {
+  deletePost,
+  downvote,
+  removeVote,
+  upvote,
+} from "../../firebase/firebase.posts";
 import { useDispatch, useSelector } from "react-redux";
 import { setPath } from "../../redux/redirectSlice";
 import { useState } from "react";
+import OptionsMenu from "./OptionsMenu";
+import { deleteFileFromURL } from "../../firebase/firebase.storage";
+import { deleteAllComments } from "../../firebase/firebase.comments";
 
 const MainPanel = styled(Panel)`
   padding: 0;
@@ -62,7 +70,6 @@ const MenuBar = styled.ul`
 
     font-size: 0.7rem;
     font-weight: bold;
-    opacity: 50%;
     cursor: pointer;
 
     &:hover,
@@ -204,6 +211,8 @@ const PostPanel = ({ postData, commData }) => {
   const params = useParams();
 
   const [slide, setSlide] = useState(0);
+  const [menuDisplay, setMenuDisplay] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   const [voteCount, setVoteCount] = useState(
     postData.upvotes.length - postData.downvotes.length
@@ -251,90 +260,130 @@ const PostPanel = ({ postData, commData }) => {
     downvote(postData.id, user.uid);
   };
 
+  const handlePostDeletion = async () => {
+    try {
+      await deleteAllComments(postData.id);
+      await deletePost(postData.id, commData);
+      if (postData.type === "image")
+        await deleteFileFromURL(
+          postData.content,
+          postData.user.id,
+          commData.name
+        );
+      setIsDeleted(true);
+      if (params.postid) {
+        redirect(`/c/${params.community}`);
+      }
+    } catch (err) {
+      console.error("Unexpected error while attempting to delete post", err);
+    }
+  };
+
   return (
-    <MainPanel>
-      <PanelWrap>
-        <Upvotes vote={userVote}>
-          <div onClick={handleUpvote}>
-            <BiUpvote size={"1.4rem"} />
-          </div>
-          <span>
-            {voteCount < 1000 ? voteCount : (voteCount / 100).toFixed(1) + "k"}
-          </span>
-          <div onClick={handleDownvote}>
-            <BiDownvote size={"1.4rem"} />
-          </div>
-        </Upvotes>
-        <div>
-          <Comm>
-            <CommLogo url={commData.settings.profile} />
-            <p onClick={() => navigate(`/c/${commData.name}`)}>
-              c/{commData.name}
-            </p>
-            <span onClick={() => console.log("TODO refer to post profile")}>
-              Posted by u/{postData.user.username}
-            </span>
-          </Comm>
-          <Title
-            onClick={() => !params.postid && navigate(`post/${postData.id}`)}
-          >
-            {postData.title}
-          </Title>
-          <Content slide={slide} length={postData.content.length}>
-            {typeof postData.content === "string" ? (
-              <p>{postData.content}</p>
-            ) : (
-              <>
-                <span onClick={() => setSlide((x) => (x > 0 ? x - 1 : x))}>
-                  <AiOutlineLeft size={"1.5rem"} />
+    <>
+      {!isDeleted && (
+        <MainPanel>
+          <PanelWrap>
+            <Upvotes vote={userVote}>
+              <div onClick={handleUpvote}>
+                <BiUpvote size={"1.4rem"} />
+              </div>
+              <span>
+                {voteCount < 1000
+                  ? voteCount
+                  : (voteCount / 100).toFixed(1) + "k"}
+              </span>
+              <div onClick={handleDownvote}>
+                <BiDownvote size={"1.4rem"} />
+              </div>
+            </Upvotes>
+            <div>
+              <Comm>
+                <CommLogo url={commData.settings.profile} />
+                <p onClick={() => navigate(`/c/${commData.name}`)}>
+                  c/{commData.name}
+                </p>
+                <span onClick={() => console.log("TODO refer to post profile")}>
+                  Posted by u/{postData.user.username}
                 </span>
-                <span
-                  onClick={() =>
-                    setSlide((x) =>
-                      x < postData.content.length - 1 ? x + 1 : x
-                    )
-                  }
-                >
-                  <AiOutlineRight size={"1.5rem"} />
-                </span>
-                <ImageContainer
-                  length={postData.content.length}
-                  slide={slide}
+              </Comm>
+              <Title
+                onClick={() =>
+                  !params.postid && navigate(`post/${postData.id}`)
+                }
+              >
+                {postData.title}
+              </Title>
+              <Content slide={slide} length={postData.content.length}>
+                {typeof postData.content === "string" ? (
+                  <p>{postData.content}</p>
+                ) : (
+                  <>
+                    <span onClick={() => setSlide((x) => (x > 0 ? x - 1 : x))}>
+                      <AiOutlineLeft size={"1.5rem"} />
+                    </span>
+                    <span
+                      onClick={() =>
+                        setSlide((x) =>
+                          x < postData.content.length - 1 ? x + 1 : x
+                        )
+                      }
+                    >
+                      <AiOutlineRight size={"1.5rem"} />
+                    </span>
+                    <ImageContainer
+                      length={postData.content.length}
+                      slide={slide}
+                      onClick={() =>
+                        !params.postid && navigate(`post/${postData.id}`)
+                      }
+                    >
+                      {postData.content.map((x) => (
+                        <div key={uniqid()}>
+                          <img src={x} alt="post content" />
+                        </div>
+                      ))}
+                    </ImageContainer>
+                  </>
+                )}
+              </Content>
+              <MenuBar onpost={!!params.postid}>
+                <li
                   onClick={() =>
                     !params.postid && navigate(`post/${postData.id}`)
                   }
                 >
-                  {postData.content.map((x) => (
-                    <div key={uniqid()}>
-                      <img src={x} alt="post content" />
-                    </div>
-                  ))}
-                </ImageContainer>
-              </>
-            )}
-          </Content>
-          <MenuBar onpost={!!params.postid}>
-            <li
-              onClick={() => !params.postid && navigate(`post/${postData.id}`)}
-            >
-              <GoComment size={"1.2rem"} />
-              <span>{postData.comments.length} Comments</span>
-            </li>
-            <li>
-              <HiOutlineArrowUturnRight size={"1.2rem"} />
-              <span>Share</span>
-            </li>
-            <li>
-              <HiOutlineBookmark size={"1.2rem"} />
-              <span>Save</span>
-            </li>
-            <li>
-              <RxDotsHorizontal size={"1.2rem"} />
-            </li>
-          </MenuBar>
-        </div>
-      </PanelWrap>
-    </MainPanel>
+                  <GoComment size={"1.2rem"} />
+                  <span>{postData.comments.length} Comments</span>
+                </li>
+                <li>
+                  <HiOutlineArrowUturnRight size={"1.2rem"} />
+                  <span>Share</span>
+                </li>
+                <li>
+                  <HiOutlineBookmark size={"1.2rem"} />
+                  <span>Save</span>
+                </li>
+                <li
+                  onClick={() => setMenuDisplay((x) => !x)}
+                  style={{ position: "relative" }}
+                >
+                  <RxDotsHorizontal size={"1.2rem"} />
+                  {menuDisplay && (
+                    <OptionsMenu
+                      editAction={() => {}}
+                      deleteAction={handlePostDeletion}
+                      author={postData.user.id}
+                      mods={commData.moderators}
+                    />
+                  )}
+                </li>
+              </MenuBar>
+            </div>
+          </PanelWrap>
+        </MainPanel>
+      )}
+    </>
   );
 };
 
