@@ -1,11 +1,9 @@
 import { initializeApp } from "firebase/app";
 import {
-  addDoc,
   arrayRemove,
   arrayUnion,
   collection,
   doc,
-  getCountFromServer,
   getDoc,
   getDocs,
   getFirestore,
@@ -13,14 +11,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  updateProfile,
-  sendEmailVerification,
-} from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCGS_wJpw3WDKf9xH5oiG5vFzi42nmlS-A",
@@ -51,55 +42,6 @@ const getUserDoc = async (uid) => {
 const getUserRef = async (uid) => {
   const docSnap = await getUserDoc(uid);
   return doc(db, "users", docSnap.id);
-};
-
-// USERS ----------------------------------------------------------------------
-
-const login = async ({ email, password }) => {
-  return await signInWithEmailAndPassword(auth, email, password)
-    .then(() => Promise.resolve())
-    .catch((error) => Promise.reject(error.code));
-};
-
-const logout = () => {
-  signOut(auth)
-    .then(() => {
-      console.log("logged out");
-    })
-    .catch((error) => {
-      console.error("Sign out error", error);
-    });
-};
-
-const createUser = async (email, password, username) => {
-  if (
-    !password.match(/^(?=[^A-Z]*[A-Z])(?=[^a-z]*[a-z])(?=[^0-9]*[0-9]).{8,16}$/)
-  )
-    return Promise.reject(Error("pass/mismatch").message);
-
-  if (!username.match(/^\w{6,}$/))
-    return Promise.reject(Error("username/mismatch").message);
-
-  const usernameSnapshot = await getCountFromServer(
-    query(_usersRef, where("username", "==", username))
-  );
-  if (usernameSnapshot.data().count > 0) {
-    const error = Error("auth/username-already-in-use");
-    return Promise.reject(error.message);
-  }
-
-  const res = await createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      updateProfile(userCredential.user, { displayName: username });
-      sendEmailVerification(userCredential.user);
-      const uid = userCredential.user.uid;
-      addDoc(_usersRef, { uid, username, subscribed: [] });
-    })
-    .catch((error) => {
-      return Promise.reject(error.code);
-    });
-  console.log(res);
-  return res;
 };
 
 const updateDraft = async (draft) => {
@@ -135,9 +77,6 @@ export {
   app,
   db,
   auth,
-  login,
-  logout,
-  createUser,
   getUserDoc,
   getUserRef,
   updateDraft,

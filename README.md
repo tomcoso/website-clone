@@ -89,6 +89,13 @@ Order of business:
 - populate comments tab
 - add profile dropdown menu with theme and other settings and tabs links
 
+#### Main page
+
+- setup feed algorithm
+- setup sorting functions
+- setup side panels
+- setup header with drop down community selection
+
 #### Misc
 
 - give nsfw warning on communities u are not member of
