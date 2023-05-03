@@ -57,14 +57,6 @@ const CommunityMain = () => {
     })();
   }, [commName, user, update]);
 
-  // community hero panel (picture, name, r/name, join button)
-  // post creation interface/ log in cta
-  // sort posts panel
-  // list of posts
-  // right sidepanel with community description, creation date, and members info
-  // back to top button on right side
-  // left side panel with 'popular feeds' or communities user is subscribed to
-
   return (
     <main id="community-main">
       {typeof commData === "object" ? (

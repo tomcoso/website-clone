@@ -146,15 +146,6 @@ const addPostToCommunity = async (name, postID) => {
   });
 };
 
-// TODO : make user moderator OK
-// TODO : unmake user moderator OK
-// TODO : ban user (mod) OK
-// TODO : unban user (mod) OK
-// TODO : join community OK
-// TODO : leave community OK
-// TODO : remove post (mod)
-// TODO : remove comment (mod)
-
 export {
   getCommunity,
   createCommunity,

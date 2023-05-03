@@ -7,6 +7,9 @@ import {
   doc,
   deleteDoc,
   arrayRemove,
+  query,
+  orderBy,
+  getDocs,
 } from "firebase/firestore";
 import { auth, db, getUserDoc, getUserRef } from "./firebase.app";
 
@@ -23,6 +26,7 @@ const createPost = async (title, content, community, nsfw, type) => {
     user: { id: auth.currentUser.uid, username: auth.currentUser.displayName },
     comments: [],
     type,
+    timestamp: new Date(),
   };
   try {
     const postRef = await addDoc(_postsRef, newPost);
@@ -93,4 +97,59 @@ const removeVote = async (postID, uid) => {
   updateDoc(userRef, { posts: arrayRemove(postID) });
 };
 
-export { createPost, deletePost, getPost, upvote, downvote, removeVote };
+const feedPosts = async (sort) => {
+  const sortOrder = sort === "top" ? "upvotes" : "timestamp";
+  const postsRef = collection(db, "posts");
+  const q = query(postsRef, orderBy(sortOrder, "desc"));
+  const querySnapshot = await getDocs(q);
+  const list = [];
+
+  // for TOP and NEW queries are enough
+  if (sort === "top" || sort === "new") {
+    querySnapshot.forEach((doc) => {
+      list.push({ id: doc.id });
+    });
+    // for HOT we make a sort value
+  } else if (sort === "hot") {
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      // upvotes + downvotes + comments = ACTIVITY index
+      // divided by the log10 of time that it was active for in miliseconds
+      // (upvote + downvote + comments) / log10(date.now - timestamp) (*10 to make it a whole number or 0)
+
+      const activityIndex =
+        data.upvotes.length + data.downvotes.length + data.comments.length;
+      const timeIndex = Math.log10(
+        Date.now() - data.timestamp.toDate().getTime()
+      ).toFixed(2);
+      const sortValue = ((activityIndex / timeIndex) * 10).toFixed(0);
+      if (list.length === 0) {
+        list.push({ id: doc.id, value: sortValue });
+        return;
+      }
+      // then insert each post in a list by finding its right place by sort value
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].value <= sortValue) {
+          list.splice(i, 0, { id: doc.id, value: sortValue });
+          return;
+        }
+        if (i === list.length - 1) {
+          list.push({ id: doc.id, value: sortValue });
+          return;
+        }
+        continue;
+      }
+    });
+  }
+  return list;
+};
+
+export {
+  createPost,
+  deletePost,
+  getPost,
+  upvote,
+  downvote,
+  removeVote,
+  feedPosts,
+};

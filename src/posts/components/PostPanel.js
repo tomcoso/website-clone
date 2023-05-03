@@ -309,7 +309,8 @@ const PostPanel = ({ postData, commData }) => {
               </Comm>
               <Title
                 onClick={() =>
-                  !params.postid && navigate(`post/${postData.id}`)
+                  !params.postid &&
+                  navigate(`/c/${commData.name}/post/${postData.id}`)
                 }
               >
                 {postData.title}
@@ -335,7 +336,8 @@ const PostPanel = ({ postData, commData }) => {
                       length={postData.content.length}
                       slide={slide}
                       onClick={() =>
-                        !params.postid && navigate(`post/${postData.id}`)
+                        !params.postid &&
+                        navigate(`/c/${commData.name}/post/${postData.id}`)
                       }
                     >
                       {postData.content.map((x) => (
