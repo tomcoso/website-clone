@@ -9,6 +9,7 @@ import {
   updateDoc,
   where,
   collection,
+  orderBy,
 } from "firebase/firestore";
 import { auth, db, getUserDoc } from "./firebase.app";
 import { uploadImage, getImageURL } from "./firebase.storage";
@@ -146,6 +147,15 @@ const addPostToCommunity = async (name, postID) => {
   });
 };
 
+const getAllCommunities = async () => {
+  const commsCollection = collection(db, "communities");
+  const q = query(commsCollection, orderBy("name"));
+  const commsSnap = await getDocs(q);
+  const list = [];
+  commsSnap.forEach((doc) => list.push(doc.data().name));
+  return list;
+};
+
 export {
   getCommunity,
   createCommunity,
@@ -156,4 +166,5 @@ export {
   banUser,
   unbanUser,
   addPostToCommunity,
+  getAllCommunities,
 };

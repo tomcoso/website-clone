@@ -25,6 +25,7 @@ root.render(
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="new-community" element={<CommunityNew />} />
+            <Route path="submit" element={<SubmitPost />} />
             <Route path="c">
               <Route path=":community">
                 <Route index element={<CommunityMain />} />
