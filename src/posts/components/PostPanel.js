@@ -154,6 +154,7 @@ const Content = styled.div`
   overflow: hidden;
   position: relative;
   cursor: pointer;
+  max-width: 550px;
 
   > span {
     position: absolute;
@@ -186,10 +187,11 @@ const Content = styled.div`
 
 const ImageContainer = styled.div`
   display: grid;
-  grid: 1fr / repeat(auto-fit, 600px);
-  width: ${(p) => 600 * p.length + "px"};
-  transform: translateX(${(p) => p.slide * -600 + "px"});
+  grid: 1fr / repeat(auto-fit, 550px);
+  width: ${(p) => 550 * p.length + "px"};
+  transform: translateX(${(p) => p.slide * -550 + "px"});
   transition: transform 300ms;
+  user-select: none;
 
   > div {
     display: flex;
