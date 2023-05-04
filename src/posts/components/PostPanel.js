@@ -132,6 +132,7 @@ const PanelWrap = styled.div`
   position: relative;
   background-color: var(--field);
   border-radius: 5px;
+  max-width: 94dvw;
 
   > div {
     background-color: var(--panel);
@@ -195,6 +196,7 @@ const ImageContainer = styled.div`
     justify-content: center;
     align-items: center;
     background-color: var(--bg);
+    max-width: 80dvw;
 
     > img {
       object-fit: contain;

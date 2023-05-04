@@ -93,9 +93,10 @@ Order of business:
 
 - setup feed algorithm OK
 - setup sorting functions OK
-- setup side panels
+- setup side panels OK
 - setup header with drop down community selection
-- make post creation make user select community
+- make post creation make user select community OK
+- fix mobile layout
 
 #### Misc
 

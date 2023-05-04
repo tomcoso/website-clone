@@ -54,9 +54,11 @@ const createCommunity = async (name, nsfw) => {
     timestamp: new Date(),
     blacklist: [],
     settings: {
-      banner: "",
+      banner:
+        "https://firebasestorage.googleapis.com/v0/b/coralit-media.appspot.com/o/elementor-placeholder-image.png?alt=media&token=0747eb9b-2505-4bd5-868a-482b0b2576ae",
       nsfw,
-      profile: "",
+      profile:
+        "https://firebasestorage.googleapis.com/v0/b/coralit-media.appspot.com/o/Cnobg.png?alt=media&token=9b94b7e9-47bc-42a8-ba0f-0c8e6bd304bd",
       title: name,
       desc: `This is ${name}. The greatest community on Coralit.`,
     },
