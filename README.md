@@ -91,10 +91,11 @@ Order of business:
 
 #### Main page
 
-- setup feed algorithm
-- setup sorting functions
+- setup feed algorithm OK
+- setup sorting functions OK
 - setup side panels
 - setup header with drop down community selection
+- make post creation make user select community
 
 #### Misc
 

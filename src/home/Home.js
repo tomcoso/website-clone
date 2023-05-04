@@ -1,9 +1,15 @@
-import { useNavigate } from "react-router";
-import uniqid from "uniqid";
 import Button from "../components/Button";
 import CreatePost from "../communities/components/CreatePost";
 import Post from "../posts/components/Post";
 import Panel from "../communities/components/Panel";
+import { HiOutlineFire } from "react-icons/hi";
+import { IoIosPodium } from "react-icons/io";
+import { TiStarburstOutline } from "react-icons/ti";
+
+import uniqid from "uniqid";
+import "./styling/home.scss";
+
+import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { feedPosts } from "../firebase/firebase.posts";
 
@@ -25,22 +31,48 @@ const Home = () => {
 
   return (
     <main id="home-main">
-      <h1>Home page</h1>
-      <Button action={() => navigate("new-community")}>Create Community</Button>
       <section className="body-section">
         <div className="post-column">
+          <CreatePost />
           <Panel>
-            <ul>
-              <li onClick={() => setSort("hot")}>Hot</li>
-              <li onClick={() => setSort("top")}>Top</li>
-              <li onClick={() => setSort("new")}>New</li>
+            <ul className="sort-selector">
+              <li
+                onClick={() => setSort("hot")}
+                className={sort === "hot" ? "selected" : ""}
+              >
+                <HiOutlineFire size={"1.5rem"} />
+                Hot
+              </li>
+              <li
+                onClick={() => setSort("top")}
+                className={sort === "top" ? "selected" : ""}
+              >
+                <IoIosPodium size={"1.5rem"} />
+                Top
+              </li>
+              <li
+                onClick={() => setSort("new")}
+                className={sort === "new" ? "selected" : ""}
+              >
+                <TiStarburstOutline size={"1.5rem"} />
+                New
+              </li>
             </ul>
           </Panel>
-          <CreatePost />
           {feed && feed.map((x) => <Post postID={x.id} key={uniqid()} />)}
         </div>
         <div className="side-column">
-          <Panel>Description</Panel>
+          <Panel className="side-info">
+            <h2>Home</h2>
+            <p>
+              Your personal Coralit frontpage. Come here to check in with your
+              favourite communities
+            </p>
+            <Button action={() => navigate("new-community")}>
+              Create Community
+            </Button>
+            <Button action={() => navigate("submit")}>Create Post</Button>
+          </Panel>
         </div>
       </section>
     </main>
