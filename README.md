@@ -95,6 +95,8 @@ Order of business:
 - setup sorting functions OK
 - setup side panels OK
 - setup header with drop down community selection
+- setup header Coralit main button
+- select font for coralit and all text
 - make post creation make user select community OK
 - fix mobile layout
 

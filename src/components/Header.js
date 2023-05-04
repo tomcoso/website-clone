@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Button from "./Button";
 import { useLocation, useNavigate } from "react-router";
 import { setPath } from "../redux/redirectSlice";
+import logo from "../assets/media/coralit-logo.png";
 
 const HeaderElem = styled.header`
   width: 100svw;
@@ -14,6 +15,31 @@ const HeaderElem = styled.header`
   align-items: center;
   justify-content: spaced-evenly;
   background-color: var(--panel);
+`;
+
+const HeaderLogo = styled.span`
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0 1.5rem;
+  cursor: pointer;
+
+  > div {
+    height: 3.5dvh;
+
+    > img {
+      object-fit: contain;
+      height: 100%;
+    }
+  }
+
+  > h1 {
+    font-size: 1.8rem;
+    font-family: "Fredoka", sans-serif;
+    font-weight: 400;
+    line-height: 100%;
+    transform: translateY(-1px);
+  }
 `;
 
 const Header = () => {
@@ -26,6 +52,12 @@ const Header = () => {
 
   return (
     <HeaderElem>
+      <HeaderLogo onClick={() => navigate("/")}>
+        <div>
+          <img src={logo} alt="coralit logo" />
+        </div>
+        <h1>coralit</h1>
+      </HeaderLogo>
       {user.isLoggedIn ? (
         <Button action={logout}>Log out</Button>
       ) : (
