@@ -14,3 +14,23 @@ main#post-main {
     max-width: 655px;
   }
 }
+
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .description {
+    > span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+
+      > p {
+        font-weight: 600;
+        font-size: 1.2rem;
+      }
+    }
+  }
+}

@@ -9,13 +9,13 @@ import { auth } from "./firebase/firebase.app";
 import styled from "styled-components";
 
 const Container = styled.div`
-  --contrast: ${(props) => (props.theme === "dark" ? "#edeff1" : "#030303")};
+  --contrast: ${(props) => (props.theme === "dark" ? "#E7EFEB" : "#131316")};
   --contrast-trans50: ${(props) =>
-    props.theme === "dark" ? "#edeff180" : "#03030380"};
-  --bg: ${(props) => (props.theme === "dark" ? "#030303" : "#dae0e6")};
-  --accent: coral;
+    props.theme === "dark" ? "##E7EFEB80" : "#03030380"};
+  --bg: ${(props) => (props.theme === "dark" ? "#131316" : "#dae0e6")};
+  --accent: #ff686b;
   --border: #343536;
-  --action: ${(props) => (props.theme === "dark" ? "#d7dadc" : "#009ad5")};
+  --action: #0596c7;
   --field: ${(props) => (props.theme === "dark" ? "#272729" : "#f6f7f8")};
   --panel: ${(props) => (props.theme === "dark" ? "#1a1a1b" : "#ffffff")};
   min-height: 92dvh;

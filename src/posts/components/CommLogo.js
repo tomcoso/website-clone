@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 const Circle = styled.div`
   border-radius: 100%;
-  width: 20px;
-  height: 20px;
+  width: ${(p) => p.size};
+  height: ${(p) => p.size};
   overflow: hidden;
 
   > img {
@@ -12,9 +12,9 @@ const Circle = styled.div`
   }
 `;
 
-const CommLogo = ({ url }) => {
+const CommLogo = ({ url, size = "20px" }) => {
   return (
-    <Circle>
+    <Circle size={size}>
       <img src={url} alt={"community profile"} />
     </Circle>
   );

@@ -118,7 +118,7 @@ const Upvotes = styled.li`
 
     &:first-child svg {
       fill: ${(props) =>
-        props.vote === "up" ? "var(--action)" : "currenColor"};
+        props.vote === "up" ? "var(--accent)" : "currentColor"};
     }
     &:last-child svg {
       fill: ${(props) =>
@@ -356,7 +356,8 @@ const PostPanel = ({ postData, commData }) => {
               <MenuBar onpost={!!params.postid}>
                 <li
                   onClick={() =>
-                    !params.postid && navigate(`post/${postData.id}`)
+                    !params.postid &&
+                    navigate(`/c/${commData.name}/post/${postData.id}`)
                   }
                 >
                   <GoComment size={"1.2rem"} />

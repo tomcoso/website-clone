@@ -6,6 +6,7 @@ import Panel from "../communities/components/Panel";
 import "./styling/postMain.scss";
 import { PostPanel } from "./components/Post";
 import CommentSection from "./components/CommentSection";
+import CommLogo from "./components/CommLogo";
 
 const PostMain = () => {
   const [postData, setPostData] = useState();
@@ -31,10 +32,13 @@ const PostMain = () => {
               <PostPanel postData={postData} commData={commData} />
               <CommentSection commData={commData} postID={postid} />
             </div>
-            <div>
-              <Panel>
-                <p>c/{commData.name}</p>
-                <p>{commData.description || "No community description"}</p>
+            <div className="side-panel">
+              <Panel className="description">
+                <span>
+                  <CommLogo url={commData.settings.profile} size="3rem" />
+                  <p>c/{commData.name}</p>
+                </span>
+                <p>{commData.settings.desc || "No community description"}</p>
               </Panel>
             </div>
           </div>

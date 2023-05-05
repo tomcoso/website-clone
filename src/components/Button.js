@@ -3,13 +3,13 @@ import styled from "styled-components";
 
 const StyledButton = styled.button`
   background-color: ${(props) =>
-    props.toggle ? "var(--action)" : "var(--panel)"};
-  border: var(--action) solid 1px;
+    props.toggle ? "var(--accent)" : "var(--panel)"};
+  border: var(--accent) solid 1px;
   border-radius: 50px;
   padding: ${(props) => props.padding};
   font-size: 0.8rem;
   font-weight: bold;
-  color: ${(props) => (props.toggle ? "var(--panel)" : "var(--action)")};
+  color: ${(props) => (props.toggle ? "var(--panel)" : "var(--accent)")};
   height: min-content;
   cursor: pointer;
 

@@ -79,8 +79,15 @@
         transform: translateY(2px);
 
         &.selected {
-          svg {
-            fill: var(--action);
+          &:first-child {
+            svg {
+              fill: var(--accent);
+            }
+          }
+          &:last-child {
+            svg {
+              fill: var(--action);
+            }
           }
         }
       }
