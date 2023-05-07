@@ -19,6 +19,7 @@ const Home = () => {
   const [sort, setSort] = useState("hot");
 
   useEffect(() => {
+    document.title = "Coralit - Surf everything";
     (async () => {
       try {
         const data = await feedPosts(sort);

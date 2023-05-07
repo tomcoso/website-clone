@@ -24,7 +24,7 @@ const DisplayImage = styled.div`
   &:hover,
   &:focus {
     border: ${(props) =>
-      props.last ? "1px dashed var(--action)" : "2px solid var(--border)"};
+      props.last ? "1px dashed var(--accent)" : "2px solid var(--border)"};
   }
   > img {
     width: 100%;
@@ -56,7 +56,7 @@ const DisplayImage = styled.div`
 
 const ImageDrop = styled.div`
   border: ${(props) =>
-    props.fileHover ? "2px dashed var(--action)" : "1px solid var(--border)"};
+    props.fileHover ? "2px dashed var(--accent)" : "1px solid var(--border)"};
 `;
 
 const ImagePost = ({ user, commName }) => {

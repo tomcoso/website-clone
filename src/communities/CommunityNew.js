@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import Button from "../components/Button";
@@ -19,6 +19,10 @@ const CommunityNew = () => {
   const [error, setError] = useState("");
   const [nsfwToggle, setNsfwToggle] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = "Create new community";
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

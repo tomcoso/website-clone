@@ -19,17 +19,46 @@ main#post-main {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  height: min-content;
 
   .description {
-    > span {
+    > .logo {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       padding: 0.5rem 0;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
 
       > p {
         font-weight: 600;
         font-size: 1.2rem;
+      }
+    }
+    > .desc {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+
+      > p:first-child {
+        font-size: 0.9rem;
+        opacity: 50%;
+      }
+    }
+    > .join {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1rem;
+
+      > span {
+        > p:last-child {
+          font-size: 0.7rem;
+          opacity: 70%;
+        }
       }
     }
   }

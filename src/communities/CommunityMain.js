@@ -50,6 +50,7 @@ const CommunityMain = () => {
       try {
         const data = await getCommunity(commName);
         setCommData(data);
+        document.title = `${commName}`;
       } catch (error) {
         console.log("404", error);
         setCommData(404);

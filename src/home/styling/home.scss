@@ -48,6 +48,7 @@
     display: flex;
     gap: 0.5rem;
     justify-content: center;
+
     > li {
       list-style: none;
       padding: 0.25rem 0.5rem;
@@ -64,6 +65,16 @@
       &.selected {
         opacity: 100%;
         background-color: var(--bg);
+        color: var(--accent);
+        > svg {
+          fill: var(--accent);
+        }
+        &:first-child {
+          > svg {
+            fill: none;
+            stroke: var(--accent);
+          }
+        }
       }
     }
   }

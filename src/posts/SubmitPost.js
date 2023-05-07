@@ -60,7 +60,7 @@ const Nav = styled.nav`
 
 const NavItem = styled.div`
   border-bottom: 2px solid
-    ${(props) => (props.selected ? "var(--action)" : "var(--border)")};
+    ${(props) => (props.selected ? "var(--accent)" : "var(--border)")};
   padding: 1rem;
   justify-self: flex-start;
 `;
@@ -111,6 +111,7 @@ const SubmitPost = () => {
     (async () => {
       const data = await getAllCommunities();
       setCommsList(data);
+      document.title = "Submit post";
     })();
   }, []);
 

@@ -99,6 +99,7 @@ Order of business:
 - select font for coralit and all text
 - make post creation make user select community OK
 - fix mobile layout
+- ADD DOCUMENT TITLES TO EVERYTHING
 
 #### Misc
 

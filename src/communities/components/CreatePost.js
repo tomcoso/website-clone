@@ -18,7 +18,7 @@ const FakeInput = styled.div`
   &:hover,
   &:focus {
     background-color: var(--panel);
-    border: var(--action) solid 1px;
+    border: var(--accent) solid 1px;
   }
 `;
 
