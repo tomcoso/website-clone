@@ -94,12 +94,13 @@ Order of business:
 - setup feed algorithm OK
 - setup sorting functions OK
 - setup side panels OK
+- select font for coralit and all text OK
+- make post creation make user select community OK
+- add document titles OK
+- fix mobile layout
 - setup header with drop down community selection
 - setup header Coralit main button
-- select font for coralit and all text
-- make post creation make user select community OK
-- fix mobile layout
-- ADD DOCUMENT TITLES TO EVERYTHING
+- style community creation page OK
 
 #### Misc
 

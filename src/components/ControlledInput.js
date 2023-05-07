@@ -13,6 +13,7 @@ const Input = styled.input`
   border-radius: 2px;
   border: 1px solid ${(props) => (props.invalid ? "red" : "black")};
   padding: 0.2rem 0.5rem;
+  background-color: var(--field);
 `;
 
 const ControlledInput = React.forwardRef(

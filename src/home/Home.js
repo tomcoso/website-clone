@@ -12,16 +12,18 @@ import "./styling/home.scss";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { feedPosts } from "../firebase/firebase.posts";
+import CommunityNew from "./CommunityNew";
 
 const Home = () => {
   const navigate = useNavigate();
   const [feed, setFeed] = useState();
   const [sort, setSort] = useState("hot");
+  const [newComm, setNewComm] = useState(false);
 
   useEffect(() => {
-    document.title = "Coralit - Surf everything";
     (async () => {
       try {
+        document.title = "Coralit - Surf everything";
         const data = await feedPosts(sort);
         setFeed(data);
       } catch (err) {
@@ -32,7 +34,8 @@ const Home = () => {
 
   return (
     <main id="home-main">
-      <section className="body-section">
+      <CommunityNew display={newComm} hideAction={() => setNewComm(false)} />
+      <section className={newComm ? "body-section no-scroll" : "body-section"}>
         <div className="post-column">
           <CreatePost />
           <Panel>
@@ -69,7 +72,7 @@ const Home = () => {
               Your personal Coralit frontpage. Come here to check in with your
               favourite communities
             </p>
-            <Button action={() => navigate("new-community")}>
+            <Button action={() => setNewComm((x) => !x)}>
               Create Community
             </Button>
             <Button action={() => navigate("submit")}>Create Post</Button>
