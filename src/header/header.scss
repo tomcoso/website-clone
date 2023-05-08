@@ -3,6 +3,10 @@
   :root {
     --nav-width: min-content;
     --current-display: none;
+    --position: fixed;
+    --top: 6dvh;
+    --right: 0;
+    --left: 0;
   }
 }
 // DESKTOP / TABLE
@@ -10,6 +14,11 @@
   :root {
     --nav-width: 15vw;
     --current-display: block;
+    --position: absolute;
+    --transform: 0%;
+    --top: calc(100% - 4px);
+    --left: -1px;
+    --right: -1px;
   }
 }
 
@@ -20,10 +29,11 @@
     border-radius: 4px;
     position: relative;
     user-select: none;
+    cursor: pointer;
 
     &:hover,
     &:focus {
-      border: 1px solid var(--contrast);
+      outline: 1px solid var(--contrast);
     }
 
     > .current-position {
@@ -46,15 +56,16 @@
       }
     }
     .comms-list {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      min-width: 100%;
+      position: var(--position);
+      top: var(--top);
+      left: var(--left);
+      right: var(--right);
+      min-width: calc(100% + 2px);
       width: min-content;
-      border: 1px solid var(--border);
+      border: 1px solid var(--contrast);
+      border-top: none;
       z-index: 2;
-      background-color: var(--field);
+      background-color: var(--panel);
       padding: 0.5rem 0;
 
       .drop-down-item {
@@ -71,6 +82,71 @@
         > div {
           min-width: 1rem;
         }
+      }
+    }
+  }
+
+  > .user-drop-down {
+    position: relative;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    background-color: var(--panel);
+    user-select: none;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 1.5dvw;
+
+    &:hover,
+    &:focus {
+      outline: 1px solid var(--contrast);
+    }
+    > .user-current {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      > p {
+        display: var(--current-display);
+      }
+    }
+
+    > .user-menu {
+      position: var(--position);
+      top: var(--top);
+      left: var(--left);
+      right: var(--right);
+      min-width: calc(100% + 2px);
+      width: min-content;
+      border: 1px solid var(--contrast);
+      border-top: none;
+      z-index: 2;
+      background-color: var(--panel);
+      padding: 0.5rem 0;
+
+      > div {
+        cursor: pointer;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.9rem;
+        display: flex;
+        gap: 0.75rem;
+
+        &:hover,
+        &:focus {
+          background-color: var(--bg);
+        }
+        &:active {
+          background-color: var(--accent);
+        }
+      }
+      > .separator {
+        display: block;
+        margin: 0.75rem;
+        border: none;
+        border-top: 1px solid var(--border);
+      }
+      > p {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.7rem;
+        opacity: 70%;
       }
     }
   }

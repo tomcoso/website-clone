@@ -8,6 +8,7 @@ const userSlice = createSlice({
     pfp: null,
     email: null,
     uid: null,
+    theme: null,
   },
   reducers: {
     login: (state, action) => {

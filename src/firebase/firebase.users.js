@@ -10,9 +10,10 @@ import {
   collection,
   getCountFromServer,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
-import { auth, db } from "./firebase.app";
+import { auth, db, getUserRef } from "./firebase.app";
 
 // USERS ----------------------------------------------------------------------
 
@@ -75,4 +76,9 @@ const createUser = async (email, password, username) => {
   return res;
 };
 
-export { login, logout, createUser };
+const updateUserSettings = async (uid, newVal) => {
+  const userRef = await getUserRef(uid);
+  await updateDoc(userRef, { settings: newVal });
+};
+
+export { login, logout, createUser, updateUserSettings };
