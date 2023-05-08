@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation, Outlet } from "react-router";
 import { login, logout } from "./redux/userSlice";
-import Header from "./components/Header";
+import Header from "./header/Header";
 import "./style.scss";
 import { auth } from "./firebase/firebase.app";
 import styled from "styled-components";

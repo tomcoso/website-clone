@@ -2,14 +2,21 @@ import { useSelector, useDispatch } from "react-redux";
 import { change } from "../redux/themeSlice";
 import { logout } from "../firebase/firebase.users";
 import styled from "styled-components";
-import Button from "./Button";
-import { useLocation, useNavigate } from "react-router";
+import Button from "../components/Button";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { setPath } from "../redux/redirectSlice";
 import logo from "../assets/media/coralit-logo.png";
+import { useEffect, useState } from "react";
+import {
+  getAllCommunities,
+  getCommunity,
+} from "../firebase/firebase.communities";
+import DropDownNav from "./DropDownNav";
+import "./header.scss";
 
 const HeaderElem = styled.header`
   width: 100svw;
-  height: 8svh;
+  height: max(6svh, 3rem);
   display: flex;
   gap: 1rem;
   align-items: center;
@@ -21,7 +28,7 @@ const HeaderLogo = styled.span`
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  padding: 0 1.5rem;
+  padding: 0 1.5vw;
   cursor: pointer;
 
   > div {
@@ -50,14 +57,39 @@ const Header = () => {
 
   const navigate = useNavigate();
 
+  const [allComms, setAllComms] = useState(null);
+  const [currentPage, setCurrentPage] = useState(null);
+  const params = useParams();
+
+  useEffect(() => {
+    (async () => {
+      const data = await getAllCommunities();
+      setAllComms(data);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (params.community) {
+        const data = await getCommunity(params.community);
+        setCurrentPage(data);
+        return;
+      }
+      setCurrentPage(null);
+    })();
+  }, [params]);
+
   return (
-    <HeaderElem>
+    <HeaderElem id="header">
       <HeaderLogo onClick={() => navigate("/")}>
         <div>
           <img src={logo} alt="coralit logo" />
         </div>
         <h1>coralit</h1>
       </HeaderLogo>
+
+      <DropDownNav communities={allComms} current={currentPage} />
+
       {user.isLoggedIn ? (
         <Button action={logout}>Log out</Button>
       ) : (

@@ -1,0 +1,77 @@
+// MOBILE
+@media (max-width: 600px) {
+  :root {
+    --nav-width: min-content;
+    --current-display: none;
+  }
+}
+// DESKTOP / TABLE
+@media (min-width: 601px) {
+  :root {
+    --nav-width: 15vw;
+    --current-display: block;
+  }
+}
+
+#header {
+  .drop-down-nav {
+    padding: 0.25rem 0.75rem;
+    background-color: var(--panel);
+    border-radius: 4px;
+    position: relative;
+    user-select: none;
+
+    &:hover,
+    &:focus {
+      border: 1px solid var(--contrast);
+    }
+
+    > .current-position {
+      min-width: var(--nav-width);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+
+      > div {
+        font-size: 0.9rem;
+        align-self: flex-start;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        > span {
+          display: var(--current-display);
+        }
+      }
+    }
+    .comms-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      min-width: 100%;
+      width: min-content;
+      border: 1px solid var(--border);
+      z-index: 2;
+      background-color: var(--field);
+      padding: 0.5rem 0;
+
+      .drop-down-item {
+        font-size: 0.9rem;
+        display: flex;
+        gap: 0.5rem;
+        padding: 0.25rem;
+
+        &:hover,
+        &:focus {
+          background-color: var(--bg);
+        }
+
+        > div {
+          min-width: 1rem;
+        }
+      }
+    }
+  }
+}

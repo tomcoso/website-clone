@@ -97,10 +97,10 @@ Order of business:
 - select font for coralit and all text OK
 - make post creation make user select community OK
 - add document titles OK
+- style community creation page OK
+- setup header Coralit main button OK
 - fix mobile layout
 - setup header with drop down community selection
-- setup header Coralit main button
-- style community creation page OK
 
 #### Misc
 
