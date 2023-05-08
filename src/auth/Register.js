@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { createUser } from "../firebase/firebase.users";
 import ControlledInput from "../components/ControlledInput";
@@ -8,6 +8,9 @@ import AuthForm from "./components/AuthForm";
 
 import { checkValidity } from "./authUtility";
 import VerifyEmail from "./components/VerifyEmail";
+
+import "./styling/register.scss";
+import Panel from "../communities/components/Panel";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -35,6 +38,9 @@ const Register = () => {
         setError(error);
       });
   };
+  useEffect(() => {
+    document.title = "Coralit - Register";
+  }, []);
 
   const handleClientValidity = () => {
     const usernameVal = checkValidity(usernameRef.current);
@@ -54,66 +60,72 @@ const Register = () => {
   };
 
   return (
-    <main>
-      <h1>Register</h1>
-      {!verification ? (
-        <AuthForm noValidate onSubmit={handleSubmit}>
-          <ControlledInput
-            type="text"
-            id="register-name"
-            value={username}
-            control={setUsername}
-            required={true}
-            ref={usernameRef}
-            invalid={error !== "" && error.match(/username/) ? true : false}
-          >
-            Username
-          </ControlledInput>
-          <ControlledInput
-            type="email"
-            id="register-email"
-            value={email}
-            control={setEmail}
-            required={true}
-            ref={emailRef}
-            invalid={error !== "" && error.match(/email/) ? true : false}
-          >
-            E-mail address
-          </ControlledInput>
-          <ControlledInput
-            type="password"
-            id="register-password"
-            value={password}
-            control={setPassword}
-            required={true}
-            ref={passRef}
-            invalid={error !== "" && error.match(/pass\//) ? true : false}
-          >
-            Password
-          </ControlledInput>
-          <ControlledInput
-            type="password"
-            id="register-repeat-password"
-            value={repeatPassword}
-            control={setRepeatPassword}
-            required={true}
-            pattern={password}
-            ref={passRepeatRef}
-            invalid={error !== "" && error.match(/pass-repeat/) ? true : false}
-          >
-            Repeat password
-          </ControlledInput>
-          <RegisterErrors errorCode={error} />
-          <Button type="submit" action={handleClientValidity}>
-            Create account
-          </Button>
-        </AuthForm>
-      ) : (
-        <VerifyEmail address={email} />
-      )}
-      <p>
-        Already have an account? <Link to="/login">Log in</Link>
-      </p>
+    <main id="register-page">
+      <Panel>
+        <span>Welcome !!</span>
+        <h1>Register</h1>
+        {!verification ? (
+          <AuthForm noValidate onSubmit={handleSubmit}>
+            <ControlledInput
+              type="text"
+              id="register-name"
+              value={username}
+              control={setUsername}
+              required={true}
+              ref={usernameRef}
+              invalid={error !== "" && error.match(/username/) ? true : false}
+            >
+              Username
+            </ControlledInput>
+            <ControlledInput
+              type="email"
+              id="register-email"
+              value={email}
+              control={setEmail}
+              required={true}
+              ref={emailRef}
+              invalid={error !== "" && error.match(/email/) ? true : false}
+            >
+              E-mail address
+            </ControlledInput>
+            <ControlledInput
+              type="password"
+              id="register-password"
+              value={password}
+              control={setPassword}
+              required={true}
+              ref={passRef}
+              invalid={error !== "" && error.match(/pass\//) ? true : false}
+            >
+              Password
+            </ControlledInput>
+            <ControlledInput
+              type="password"
+              id="register-repeat-password"
+              value={repeatPassword}
+              control={setRepeatPassword}
+              required={true}
+              pattern={password}
+              ref={passRepeatRef}
+              invalid={
+                error !== "" && error.match(/pass-repeat/) ? true : false
+              }
+            >
+              Repeat password
+            </ControlledInput>
+            <RegisterErrors errorCode={error} />
+            <Button type="submit" action={handleClientValidity}>
+              Create account
+            </Button>
+          </AuthForm>
+        ) : (
+          <VerifyEmail address={email} />
+        )}
+        <p>
+          Already have an account? <Link to="/login">Log in</Link>
+        </p>
+        <p>2023 Tomas Dessy © All rights reserved.</p>
+      </Panel>
     </main>
   );
 };

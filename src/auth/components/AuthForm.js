@@ -5,8 +5,11 @@ const AuthForm = styled.form`
   flex-direction: column;
   justify-content: center;
   padding: 1rem;
-  gap: 1rem;
+  gap: 1.5rem;
   width: 40ch;
+  > div {
+    width: 100%;
+  }
 `;
 
 export default AuthForm;

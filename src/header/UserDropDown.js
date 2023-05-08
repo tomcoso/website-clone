@@ -50,10 +50,12 @@ const UserDropDown = () => {
         theme: theme === "light" ? "dark" : "light",
       });
     }
+    setOpen((x) => !x);
     dispatch(change());
   };
 
   const handleLogOutClick = () => {
+    setOpen(false);
     logout();
   };
 

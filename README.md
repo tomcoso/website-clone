@@ -99,15 +99,15 @@ Order of business:
 - add document titles OK
 - style community creation page OK
 - setup header Coralit main button OK
-- fix mobile layout
-- setup header with drop down community selection
+- fix mobile layout OK
+- setup header with drop down community selection OK
 
 #### Misc
 
-- give nsfw warning on communities u are not member of
-- reorganise firebase apps into separate topic modules OKish
-- integrate prefers-color-scheme to autodetect desired theme
-- populate dots menus for post and comments (delete options when owner)
-- make comments collapsable and pagionation
-- make upvote arrows orange
-- comment and post SORT fn
+- give nsfw warning on communities u are not member of (NO)
+- reorganise firebase apps into separate topic modules OK
+- integrate prefers-color-scheme to autodetect desired theme OK(ish)
+- populate dots menus for post and comments (delete options when owner) OK
+- make upvote arrows orange OK
+- comment and post SORT fn OK
+- make comments collapsable and pagination

@@ -19,7 +19,7 @@ const ErrorMsg = styled.p`
   color: red;
   padding: 0.5rem;
   background-color: rgba(255, 0, 0, 0.1);
-  width: 40ch;
+  width: 100%;
 `;
 
 export { checkValidity, ErrorMsg };
