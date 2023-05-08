@@ -1,12 +1,16 @@
 # Coralit - Surf everything
 
+[Live Demo](https://coralit-media.web.app/)
+
 Coralit is a social media platform based on [Reddit](https://www.reddit.com/). It was developed as a personal project to learn and put together the skills of a front-end developer.
 
 ## Technologies
 
+- JavaScript
 - React
-- Jest
 - Redux
+- react-router
+- Sass
 
 ## Development
 
@@ -21,17 +25,17 @@ Order of business:
 1. Setup Firebase auth and storage OK
 2. Login & Register page OK
 3. Setup Communities database OK
-4. Community interface
-5. Community page
-6. Post creation page
-7. Comment creation interface
-8. Setup upvotes (flexible order)
-9. Setup user settings and subs
-10. User/Profile page
-11. Home page
-12. Search interface
-13. Home page filters (hot, best, new, etc)
-14. User activity tabs (posts, comments)
+4. Community interface OK
+5. Community page OK
+6. Post creation page OK
+7. Comment creation interface OK
+8. Setup upvotes (flexible order) OK
+9. Setup user settings and subs OK(ish)
+10. User/Profile page OK
+11. Home page OK
+12. Home page filters (hot, best, new, etc) OK
+13. User activity tabs (posts, comments)
+14. Search interface
 15. (opt) Home side panels (communities leaderboard)
 
 #### Auth
