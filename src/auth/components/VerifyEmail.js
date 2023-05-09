@@ -2,12 +2,14 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Section = styled.section`
-  width: 100vw;
+  width: 100%;
   height: auto;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  text-align: center;
+  background-color: var(--panel);
 `;
 
 const VerifyEmail = ({ address }) => {
