@@ -12,6 +12,8 @@ const StyledButton = styled.button`
   color: ${(props) => (props.toggle ? "var(--panel)" : "var(--accent)")};
   height: min-content;
   cursor: pointer;
+  display: grid;
+  place-content: center;
 
   &:hover,
   &:focus {
@@ -36,10 +38,12 @@ const StyledButton = styled.button`
 `;
 
 const Loading = styled.div`
-  border-radius: 1rem;
-  border: 2px dashed var(--action);
+  border-radius: 100%;
+  border: 2px dashed var(--accent);
   border-left: none;
   padding: 0.5rem;
+  aspect-ratio: 1/1;
+  max-width: 1rem;
 
   @keyframes load {
     from {

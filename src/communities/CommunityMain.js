@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate, useParams } from "react-router";
 import styled from "styled-components";
 import {
   getCommunity,
@@ -13,6 +13,9 @@ import Panel from "./components/Panel";
 import CreatePost from "./components/CreatePost";
 import Post from "../posts/components/Post";
 import NoCommunity from "../components/NoCommunity";
+import CommLogo from "../posts/components/CommLogo";
+import { format } from "date-fns";
+import { setPath } from "../redux/redirectSlice";
 
 const HeroSection = styled.section`
   width: 100%;
@@ -41,6 +44,9 @@ const Profile = styled.div`
 const CommunityMain = () => {
   const commName = useParams().community;
   const user = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
 
   const [commData, setCommData] = useState();
   const [update, forceUpdate] = useState();
@@ -58,6 +64,19 @@ const CommunityMain = () => {
     })();
   }, [commName, user, update]);
 
+  const handleJoin = async () => {
+    if (!user.isLoggedIn) {
+      dispatch(setPath(location.pathname));
+      navigate(`/login`);
+      return;
+    }
+    await updateMemberOfCommunity(
+      commData.name,
+      commData.members.includes(user.uid) ? "leave" : "join"
+    );
+    forceUpdate(Math.random());
+  };
+
   return (
     <main id="community-main">
       {typeof commData === "object" ? (
@@ -73,20 +92,6 @@ const CommunityMain = () => {
                   <h2>{commData.name}</h2>
                   <p>c/{commData.name}</p>
                 </div>
-                <div className="hero-join">
-                  <Button
-                    action={async () => {
-                      console.log(commData.members.includes(user.uid));
-                      await updateMemberOfCommunity(
-                        commData.name,
-                        commData.members.includes(user.uid) ? "leave" : "join"
-                      );
-                      forceUpdate(Math.random());
-                    }}
-                  >
-                    {commData.members.includes(user.uid) ? "Joined" : "Join"}
-                  </Button>
-                </div>
               </div>
             </div>
           </HeroSection>
@@ -96,15 +101,33 @@ const CommunityMain = () => {
               {commData &&
                 commData.posts.map((x) => <Post postID={x} key={uniqid()} />)}
             </div>
-            <div className="side-column">
-              <Panel>Description</Panel>
+            <div className="side-panel">
+              <Panel className="description">
+                <span
+                  className="logo"
+                  onClick={() => navigate(`/c/${commData.name}`)}
+                >
+                  <CommLogo url={commData.settings.profile} size="3rem" />
+                  <p>c/{commData.name}</p>
+                </span>
+                <span className="desc">
+                  <p>
+                    Created {format(commData.timestamp.toDate(), "MMM d, y")}
+                  </p>
+                  <p>{commData.settings.desc || "No community description"}</p>
+                </span>
+                <span className="join">
+                  <span>
+                    <p>{commData.members.length}</p>
+                    <p>Members</p>
+                  </span>
+                  <Button action={handleJoin}>
+                    {commData.members.includes(user.uid) ? "Joined" : "Join"}
+                  </Button>
+                </span>
+              </Panel>
             </div>
           </section>
-
-          <p>
-            You are {commData.moderators.includes(user.uid) ? "a" : "not a"}{" "}
-            moderator
-          </p>
         </>
       ) : commData === 404 ? (
         <NoCommunity />

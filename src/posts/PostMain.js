@@ -16,6 +16,7 @@ import { updateMemberOfCommunity } from "../firebase/firebase.communities";
 const PostMain = () => {
   const [postData, setPostData] = useState();
   const [commData, setCommData] = useState();
+  const [update, forceUpdate] = useState();
 
   const user = useSelector((state) => state.user);
   const { postid, community } = useParams();
@@ -31,16 +32,19 @@ const PostMain = () => {
       setCommData(comm);
       document.title = data.title;
     })();
-  }, [postid, community]);
+  }, [postid, community, update]);
 
-  const handleJoinButton = () => {
+  const handleJoinButton = async () => {
     if (!user.isLoggedIn) {
       dispatch(setPath(location.pathname));
       navigate(`/login`);
       return;
     }
-    if (commData.members.includes(user.uid)) return;
-    updateMemberOfCommunity(user.uid, "join");
+    await updateMemberOfCommunity(
+      commData.name,
+      commData.members.includes(user.uid) ? "leave" : "join"
+    );
+    forceUpdate(Math.random());
   };
 
   return (
