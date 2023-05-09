@@ -70,6 +70,7 @@ const Header = () => {
     (async () => {
       if (!user) return;
       const userDoc = await getUserDoc(user.uid);
+      if (userDoc === undefined) return;
       const userData = userDoc.data();
       if (userData && theme === userData.settings.theme) return;
       dispatch(change());
