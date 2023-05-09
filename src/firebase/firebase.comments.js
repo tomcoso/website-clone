@@ -142,6 +142,18 @@ const deleteAllComments = async (postID) => {
   }
 };
 
+const getCommentCount = async (comments) => {
+  if (!Array.isArray(comments) || comments.length < 1) return 0;
+  let total = 0;
+  total += comments.length;
+  for (let each of comments) {
+    const eachDoc = await getDoc(doc(db, "comments", each));
+    if (eachDoc.data().replies.length < 1) continue;
+    total += await getCommentCount(eachDoc.data().replies);
+  }
+  return total;
+};
+
 export {
   createComment,
   getComment,
@@ -150,4 +162,5 @@ export {
   fetchPostComments,
   deleteAllComments,
   deleteComment,
+  getCommentCount,
 };

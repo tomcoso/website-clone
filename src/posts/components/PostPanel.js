@@ -17,10 +17,13 @@ import {
 } from "../../firebase/firebase.posts";
 import { useDispatch, useSelector } from "react-redux";
 import { setPath } from "../../redux/redirectSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OptionsMenu from "./OptionsMenu";
 import { deleteFileFromURL } from "../../firebase/firebase.storage";
-import { deleteAllComments } from "../../firebase/firebase.comments";
+import {
+  deleteAllComments,
+  getCommentCount,
+} from "../../firebase/firebase.comments";
 
 const MainPanel = styled(Panel)`
   padding: 0;
@@ -217,6 +220,7 @@ const PostPanel = ({ postData, commData }) => {
   const [slide, setSlide] = useState(0);
   const [menuDisplay, setMenuDisplay] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [commentCount, setCommentCount] = useState(0);
 
   const [voteCount, setVoteCount] = useState(
     postData.upvotes.length - postData.downvotes.length
@@ -282,6 +286,14 @@ const PostPanel = ({ postData, commData }) => {
       console.error("Unexpected error while attempting to delete post", err);
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      if (!postData) return;
+      const count = await getCommentCount(postData.comments);
+      setCommentCount(count);
+    })();
+  }, [postData]);
 
   return (
     <>
@@ -361,7 +373,7 @@ const PostPanel = ({ postData, commData }) => {
                   }
                 >
                   <GoComment size={"1.2rem"} />
-                  <span>{postData.comments.length} Comments</span>
+                  <span>{commentCount} Comments</span>
                 </li>
                 <li>
                   <HiOutlineArrowUturnRight size={"1.2rem"} />
