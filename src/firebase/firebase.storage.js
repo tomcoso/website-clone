@@ -6,8 +6,9 @@ import {
   uploadBytes,
   listAll,
 } from "firebase/storage";
+import { app } from "./firebase.app";
 
-const storage = getStorage();
+const storage = getStorage(app);
 // const communities = ref(storage, "communities");
 
 const uploadImage = async (folder, file) => {
